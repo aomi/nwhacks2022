@@ -1,3 +1,5 @@
 .env
+.swc
+dist
 node_modules
 .parcel-cache
