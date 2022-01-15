@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
 export function App() {
-  const [messages, setMessages] = useState<string[]>([]);
-
+  // const [messages, setMessages] = useState<string[]>([]);
   const socket = io({
     // transports: ["websocket"],
     // hostname: "localhost",
@@ -26,17 +25,17 @@ export function App() {
     });
 
     socket.on("chat message", (msg) => {
-      // console.log(msg);
-      setMessages((prev) => [...prev, msg]);
+      console.log(msg);
+      // setMessages((prev) => [...prev, msg]);
     });
   }, []);
 
   return (
     <h1>
       Hello world!
-      {messages.map((msg) => (
+      {/* {messages.map((msg) => (
         <pre>{msg}</pre>
-      ))}
+      ))} */}
     </h1>
   );
 }
