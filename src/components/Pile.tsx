@@ -1,4 +1,4 @@
-import { Box, VStack, Text, HStack, Button } from "@chakra-ui/react";
+import { Box, VStack, Text, HStack } from "@chakra-ui/react";
 import React from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import { Card } from "../api/gameBoardObjects/Card";
@@ -34,15 +34,10 @@ export function Pile({
   name,
   pileId,
   isSpread,
-  isPlayerHand,
   isFaceUp,
   shuffle,
 }: Props) {
   const topCard = cards[cards.length - 1];
-
-  const shuffleCards = () => {
-    shuffle(cards);
-  };
 
   return (
     <VStack>
@@ -121,7 +116,6 @@ export function Pile({
         )}
       </Droppable>
       <Text>{name}</Text>
-      {/* {isPlayerHand && <Button onClick={shuffleCards}>Shuffle</Button>} */}
       {/* <Text>amount: {cards.map(({ id }) => id + ", ")}</Text> */}
     </VStack>
   );

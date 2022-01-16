@@ -1,35 +1,16 @@
-import {
-  Box,
-  Button,
-  Center,
-  Grid,
-  GridItem,
-  Heading,
-  HStack,
-  Spinner,
-} from "@chakra-ui/react";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Button, Center, Grid, GridItem, HStack } from "@chakra-ui/react";
+import React, { useMemo } from "react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { Game } from "../api/Game";
 import { NewPileMenu } from "../components/NewPileMenu";
 import { Pile } from "../components/Pile";
 import { useSocket } from "../contexts/provider";
-import { AddDeckEvent, MoveCardEvent } from "../events/GameEvents";
-import { move, shuffleArray } from "../utils/gameLogic";
-
-import { DECK_TYPES } from "../enums/SharedEnums";
+import { AddDeckEvent, DealEvent, MoveCardEvent } from "../events/GameEvents";
 
 export type Card = {
   id: string;
   value: string;
 };
-
-// fake data generator, remove once cards loaded in
-const getItems = (count: number, offset = 0): Card[] =>
-  Array.from({ length: count }, (_, k) => k).map((k) => ({
-    id: `item-${k + offset}`,
-    value: `item ${k + offset}`,
-  }));
 
 type Props = {
   game: Game;
@@ -38,6 +19,7 @@ type Props = {
 export function Lobby({ game }: Props) {
   const { send: addDeck } = useSocket<AddDeckEvent>("addDeck");
   const { send: moveCard } = useSocket<MoveCardEvent>("moveCard");
+  const { send: dealCards } = useSocket<DealEvent>("deal");
 
   const handId = useMemo(
     () => game.players[game.players.length - 1].handId,
@@ -153,6 +135,14 @@ export function Lobby({ game }: Props) {
           )}
         </GridItem>
       </Grid>
+      {/* TODO: make it a modal or something not hardcoded and maybe by the pile :) */}
+      <Button
+        onClick={() =>
+          dealCards({ code: game.code, handSize: 5, srcPileId: 2 })
+        }
+      >
+        Deal
+      </Button>
     </DragDropContext>
   );
 }
