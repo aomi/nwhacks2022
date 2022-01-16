@@ -1,35 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { io } from "socket.io-client";
 import { Lobby } from "./pages/Lobby";
+import { CreateEvent } from "./events/MenuEvent";
+import { Game } from "./api/Game";
+import { useSocket, useSocketSend } from "./contexts/provider";
 
 export function App() {
-  // const [messages, setMessages] = useState<string[]>([]);
-  const socket = io({
-    // transports: ["websocket"],
-    // hostname: "localhost",
-    // port: 3001,
-    // path: "/socket.io",
-    // upgrade: true,
-  });
+  const [game, setGame] = useState<Game | null>(null);
+  const { send, data } = useSocket<string>("message");
+  const { send: createGame } = useSocket<CreateEvent>("create");
+  const { data: gameData } = useSocket<Game>("lobby:update");
 
   useEffect(() => {
-    socket.on("connect", () => {
-      console.log("connected");
-    });
+    console.log(data);
+  }, [data]);
 
-    socket.on("event", (data) => {
-      console.log(data);
-    });
-
-    socket.on("error", () => {
-      console.log("error");
-    });
-
-    socket.on("chat message", (msg) => {
-      console.log(msg);
-      // setMessages((prev) => [...prev, msg]);
-    });
-  }, []);
+  useEffect(() => {
+    setGame(gameData);
+  }, [game]);
 
   return (
     // <h1>
@@ -38,9 +25,23 @@ export function App() {
     //     <pre>{msg}</pre>
     //   ))} */}
     // </h1>
-    <Lobby
-      gameName="Keith's Game"
-      players={["player 1", "player 2", "player 3"]}
-    />
+
+    <>
+      <button
+        onClick={() =>
+          createGame({
+            gameName: "my cool game",
+            maxPlayuers: 2,
+            playerName: "dingus",
+          })
+        }
+      >
+        Send Message
+      </button>
+      <Lobby
+        gameName="Keith's Game"
+        players={["player 1", "player 2", "player 3"]}
+      />
+    </>
   );
 }

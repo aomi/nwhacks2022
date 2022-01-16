@@ -17,7 +17,9 @@ app.use(
 const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
-  //   transports: ["websocket"],
+  cors: {
+    origin: "*",
+  },
 });
 const manager = new GameManager();
 
