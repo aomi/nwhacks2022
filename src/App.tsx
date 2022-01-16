@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
+import { Lobby } from "./pages/Lobby";
 
 export function App() {
   // const [messages, setMessages] = useState<string[]>([]);
@@ -31,11 +32,12 @@ export function App() {
   }, []);
 
   return (
-    <h1>
-      Hello world!
-      {/* {messages.map((msg) => (
-        <pre>{msg}</pre>
-      ))} */}
-    </h1>
+    // <h1>
+    //   Hello world!
+    //   {/* {messages.map((msg) => (
+    //     <pre>{msg}</pre>
+    //   ))} */}
+    // </h1>
+    <Lobby />
   );
 }
