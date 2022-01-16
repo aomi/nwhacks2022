@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Lobby } from "./pages/Lobby";
-import { CreateEvent } from "./events/MenuEvent";
+import { CreateEvent } from "./events/LobbyEvents";
 import { Game } from "./api/Game";
 import { useSocket, useSocketSend } from "./contexts/provider";
 
