@@ -21,6 +21,7 @@ export class Game {
     this.nextPlayerId = 1;
     this.gameState = GameState.LOBBY;
     this.nextAvailableCardId = 0;
+    this.piles = [];
   }
 
   addPlayer(player: Player) {
