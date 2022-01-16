@@ -17,11 +17,12 @@ export class Game {
     this.code = code;
     this.name = name;
     this.maxPlayers = maxPlayers;
+    this.piles = [new Pile(0, DECK_TYPES.EMPTY, false)];
+    host.handId = 0;
     this.players = [host];
     this.nextPlayerId = 1;
     this.gameState = GameState.LOBBY;
     this.nextAvailableCardId = 0;
-    this.piles = [];
   }
 
   addPlayer(player: Player) {
