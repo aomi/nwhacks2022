@@ -51,6 +51,7 @@ export function NewPileMenu({ onSubmit }: NewPileProps) {
       <Button
         h="142px"
         w="108px"
+        mb="7"
         border="dotted"
         colorScheme="whiteAlpha"
         color="black"

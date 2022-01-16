@@ -212,7 +212,6 @@ export function Lobby({ game }: Props) {
           )}
         </GridItem>
       </Grid>
-      {/* TODO: make it a modal or something not hardcoded and maybe by the pile :) */}
     </DragDropContext>
   );
 }

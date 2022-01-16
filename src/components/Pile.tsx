@@ -43,7 +43,6 @@ export function Pile({
 
   return (
     <VStack>
-      <p>{`pileId: ${pileId}`}</p>
       <Droppable droppableId={pileId} direction="horizontal">
         {(provided, snapshot) => (
           <div
