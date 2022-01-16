@@ -7,6 +7,7 @@ type Props = {
   pileId: string;
   isFaceUp?: boolean;
   isSpread?: boolean;
+  isPlayerHand?: boolean;
   name: string;
   shuffle?: (cards: { value: string; id: string }[]) => void;
 };
@@ -32,6 +33,7 @@ export function Pile({
   name,
   pileId,
   isSpread,
+  isPlayerHand,
   isFaceUp,
   shuffle,
 }: Props) {
@@ -40,6 +42,8 @@ export function Pile({
   const shuffleCards = () => {
     shuffle(cards);
   };
+
+  console.log(cards, pileId);
 
   return (
     <VStack>
@@ -109,7 +113,7 @@ export function Pile({
         )}
       </Droppable>
       <Text>{name}</Text>
-      <Button onClick={shuffleCards}>Shuffle</Button>
+      {isPlayerHand && <Button onClick={shuffleCards}>Shuffle</Button>}
       <Text>cards: {cards.map((card) => card.value + ", ")}</Text>
     </VStack>
   );

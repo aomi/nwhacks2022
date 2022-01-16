@@ -27,7 +27,7 @@ export function App() {
     // </h1>
 
     <>
-      <button
+      {/* <button
         onClick={() =>
           createGame({
             gameName: "my cool game",
@@ -37,7 +37,7 @@ export function App() {
         }
       >
         Send Message
-      </button>
+      </button> */}
       <Lobby
         gameName="Keith's Game"
         players={["player 1", "player 2", "player 3"]}

@@ -1,6 +1,7 @@
-import { Box, Button, HStack } from "@chakra-ui/react";
-import React, { useCallback, useEffect, useState } from "react";
+import { Box, Button, Center, Grid, GridItem, HStack } from "@chakra-ui/react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
+import { NewPileMenu } from "../components/NewPileMenu";
 import { Pile } from "../components/Pile";
 import { move, shuffleArray } from "../utils/gameLogic";
 
@@ -26,11 +27,13 @@ export function Lobby({ players, gameName }: Props) {
 
   // set piles for each player
   useEffect(() => {
-    players.forEach(() => {
-      console.log("yo");
-      setPiles([...piles, getItems(5, 5 * piles.length)]);
-    });
+    setPiles(players.map(() => []));
   }, [players]);
+
+  const playerPiles = useMemo(() => piles.slice(1, players.length), [piles]);
+  const remainingPiles = useMemo(() => piles.slice(players.length), [piles]);
+  // const remainingPiles = [];
+  console.log(playerPiles);
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -66,22 +69,63 @@ export function Lobby({ players, gameName }: Props) {
   }, [piles, setPiles]);
 
   return (
-    <Box minW="100vh" minH="100vh" bgColor="green.300">
-      <Button onClick={onClick}>add a pile</Button>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <HStack spacing="10" minW="100vh" wrap="wrap">
-          {piles.map((pile, i) => (
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Grid
+        minW="100vh"
+        minH="100vh"
+        maxH="100vh"
+        bgColor="green.300"
+        templateRows="repeat(6, 1fr)"
+        templateColumns="repeat(1, 1fr)"
+        py="6"
+      >
+        <GridItem colSpan={1} rowSpan={1} h="fit-content" maxH="8em">
+          <HStack justifyContent="space-evenly" minW="100vh" wrap="wrap">
+            {playerPiles.map((pile, i) => (
+              <Pile
+                cards={pile}
+                pileId={`${i + 1}`}
+                name={players[i + 1]}
+                shuffle={shufflePile}
+                isPlayerHand
+              />
+            ))}
+          </HStack>
+        </GridItem>
+        <GridItem rowSpan={4} colSpan={1} alignItems="center" maxH="50vh">
+          <Center h="100%">
+            <HStack wrap="wrap" maxH="100%" justifyContent="space-evenly">
+              <Button onClick={onClick} h="7em" w="5.5em">
+                add a pile
+              </Button>
+              <NewPileMenu />
+              {remainingPiles.length > 0 &&
+                remainingPiles.map((pile, i) => (
+                  <Pile
+                    cards={pile}
+                    pileId={`${i + players.length}`}
+                    name={i === 0 ? "Pick up" : "Discard"}
+                    isFaceUp={i === 0}
+                    shuffle={shufflePile}
+                  />
+                ))}
+            </HStack>
+          </Center>
+        </GridItem>
+        <GridItem rowSpan={1} colSpan={1} mavH="8em">
+          {piles[0] && (
             <Pile
-              cards={pile}
-              pileId={`${i}`}
-              name={i === 0 ? "Player 1" : "Discard"}
-              isSpread={i === 0}
-              isFaceUp={i === 0}
+              cards={piles[0]}
+              pileId="0"
+              name="Player 1"
+              isFaceUp
+              isSpread
               shuffle={shufflePile}
+              isPlayerHand
             />
-          ))}
-        </HStack>
-      </DragDropContext>
-    </Box>
+          )}
+        </GridItem>
+      </Grid>
+    </DragDropContext>
   );
 }
