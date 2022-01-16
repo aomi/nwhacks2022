@@ -16,6 +16,7 @@ import { NewPileMenu } from "../components/NewPileMenu";
 import { Pile } from "../components/Pile";
 import { useSocket } from "../contexts/provider";
 import { AddDeckEvent, DealEvent, MoveCardEvent } from "../events/GameEvents";
+import { ResetGameEvent } from "../events/LobbyEvents";
 
 export type Card = {
   id: string;
@@ -30,6 +31,7 @@ export function Lobby({ game }: Props) {
   const { send: addDeck } = useSocket<AddDeckEvent>("addDeck");
   const { send: moveCard } = useSocket<MoveCardEvent>("moveCard");
   const { send: dealCards } = useSocket<DealEvent>("deal");
+  const { send: resetGame } = useSocket<ResetGameEvent>("reset");
 
   const handId = useMemo(
     () => game.players[game.players.length - 1].handId,
@@ -136,6 +138,7 @@ export function Lobby({ game }: Props) {
                   color: "white",
                 }}
                 aria-label="Reset the board"
+                onClick={() => resetGame({ code: game.code })}
               >
                 Reset
               </Button>
