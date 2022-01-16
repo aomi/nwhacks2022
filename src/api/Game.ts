@@ -59,11 +59,11 @@ export class Game {
     this.piles.splice(id);
   }
 
-  moveCard(card: Card, srcPileID: number, destPileId: number) {
+  moveCard(targetCard: Card, srcPileID: number, destPileId: number) {
     const srcPile = this.piles[srcPileID];
-    const srcIdx = srcPile.cards.indexOf(card);
+    const srcIdx = srcPile.cards.findIndex(card => targetCard.id === card.id);
     srcPile.cards.splice(srcIdx, 1);
-    this.piles[destPileId].cards.push(card);
+    this.piles[destPileId].cards.push(targetCard);
   }
 
   deal(srcPileId: number, handSize: number) {
