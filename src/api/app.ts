@@ -1,26 +1,33 @@
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import cors from "cors";
 
 const port = process.env.PORT || 3001;
 
 const app = express();
+
+app.use(
+  cors({
+    origin: "*",
+  })
+);
+
 const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
   //   transports: ["websocket"],
 });
 
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
-  // res.send('<h1>I am the server. What are you doing here?</h1>');
-});
+app.use(express.static("build"));
 
 io.on("connection", (socket) => {
   console.log("user connected", socket.id);
+
   socket.on("disconnect", () => {
     console.log("user disconnected");
   });
+
   socket.on("chat message", (msg) => {
     console.log("message: " + msg);
   });
