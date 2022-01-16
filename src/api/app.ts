@@ -116,7 +116,7 @@ io.on("connection", (socket) => {
   });
 
   // Deal event
-  socket.on("moveCard", (event: DealEvent) => {
+  socket.on("deal", (event: DealEvent) => {
     console.log("Dealing " + event.handSize + "cards in game: " + event.code);
     const game = manager.activeGames.get(event.code);
     game.deal(event.srcPileId, event.handSize);
