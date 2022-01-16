@@ -43,8 +43,10 @@ export class Game {
 
   resetGame() {
     this.piles = [];
-    for (let player in this.players) {
-      this.piles.push(new Pile(this.nextPlayerId, DECK_TYPES.EMPTY, false));
+    this.nextAvailableCardId = 0;
+    for (let i = 0; i < this.players.length; i++) {
+      this.piles.push(new Pile(this.nextAvailableCardId, DECK_TYPES.EMPTY, false));
+      this.players[i].handId = i;
     }
   }
 
