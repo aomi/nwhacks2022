@@ -1,3 +1,4 @@
+import { GameState } from "../enums/SharedEnums";
 import { Game } from "./Game";
 import { Player } from "./Player";
 
@@ -35,6 +36,28 @@ export class GameManager {
         if (!(game.nextPlayerId < game.maxPlayers)) return null;
         const joiningPlayer = new Player(playerName, game.nextPlayerId)
         game.addPlayer(joiningPlayer)
+        return game;
+    }
+
+    setGameState(code: string, newState: GameState) {
+        const game = this.activeGames.get(code);
+        game.setGameState(newState);
+        switch(newState) {
+            case GameState.LOBBY: {
+                break;
+            }            
+            case GameState.GAME_CONFIG: {
+                game.resetGame()
+                game.nextAvailableCardId = 0;
+                break;
+            }
+            case GameState.GAMEPLAY: {
+                break;
+            }
+            default: {
+                break;
+            }
+        }
         return game;
     }
 
