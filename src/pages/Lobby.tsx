@@ -95,7 +95,12 @@ export function Lobby() {
       <DragDropContext onDragEnd={onDragEnd}>
         <HStack spacing="10" minW="100vh" wrap="wrap">
           {piles.map((pile, i) => (
-            <Pile cards={pile} name={`${i}`} isSpread={i === 0} />
+            <Pile
+              cards={pile}
+              name={`${i}`}
+              isSpread={i === 0}
+              isFaceUp={i === 0}
+            />
           ))}
         </HStack>
       </DragDropContext>

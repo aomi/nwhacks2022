@@ -1,5 +1,5 @@
 import { Box, VStack, Text, HStack } from "@chakra-ui/react";
-import React, { useMemo } from "react";
+import React from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
   isSpread?: boolean;
 };
 
-export function Pile({ cards, name, isSpread }: Props) {
+export function Pile({ cards, name, isSpread, isFaceUp }: Props) {
   const topCard = cards[cards.length - 1];
   return (
     <VStack>
@@ -34,7 +34,7 @@ export function Pile({ cards, name, isSpread }: Props) {
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                       >
-                        {item.id}
+                        {isFaceUp ? item.id : "back of card"}
                       </Box>
                     )}
                   </Draggable>
@@ -57,7 +57,7 @@ export function Pile({ cards, name, isSpread }: Props) {
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                       >
-                        {topCard.id}
+                        {isFaceUp ? topCard.id : "back of card"}
                       </Box>
                     )}
                   </Draggable>
