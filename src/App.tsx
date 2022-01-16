@@ -38,6 +38,9 @@ export function App() {
     //     <pre>{msg}</pre>
     //   ))} */}
     // </h1>
-    <Lobby />
+    <Lobby
+      gameName="Keith's Game"
+      players={["player 1", "player 2", "player 3"]}
+    />
   );
 }
