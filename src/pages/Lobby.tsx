@@ -4,6 +4,7 @@ import {
   Center,
   Grid,
   GridItem,
+  Heading,
   HStack,
   Spinner,
 } from "@chakra-ui/react";
@@ -12,7 +13,11 @@ import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { Game } from "../api/Game";
 import { NewPileMenu } from "../components/NewPileMenu";
 import { Pile } from "../components/Pile";
+import { useSocket } from "../contexts/provider";
+import { AddDeckEvent } from "../events/GameEvents";
 import { move, shuffleArray } from "../utils/gameLogic";
+
+import { DECK_TYPES } from "../enums/SharedEnums";
 
 export type Card = {
   id: string;
@@ -27,20 +32,27 @@ const getItems = (count: number, offset = 0): Card[] =>
   }));
 
 type Props = {
-  players: string[];
-  gameName: string;
-  game: Game | null;
+  game: Game;
 };
 
-export function Lobby({ players, gameName, game }: Props) {
+export function Lobby({ game }: Props) {
   const [piles, setPiles] = useState<Card[][]>([]);
+  const { send: addDeck } = useSocket<AddDeckEvent>("addDeck");
 
   useEffect(() => {
-    setPiles(players.map(() => []));
-  }, [players]);
+    setPiles(game.players.map(() => []));
+  }, [game.players]);
 
-  const playerPiles = useMemo(() => piles.slice(1, players.length), [piles]);
-  const remainingPiles = useMemo(() => piles.slice(players.length), [piles]);
+  const remotePiles = game.piles;
+
+  const playerPiles = useMemo(
+    () => piles.slice(1, game.players.length),
+    [piles]
+  );
+  const remainingPiles = useMemo(
+    () => piles.slice(game.players.length),
+    [piles]
+  );
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -75,15 +87,10 @@ export function Lobby({ players, gameName, game }: Props) {
     setPiles([...piles, getItems(5, 5 * piles.length)]);
   }, [piles, setPiles]);
 
-  if (game === null) {
-    return <Spinner />;
-  }
-
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Grid
         minW="100vh"
-        minH="100vh"
         maxH="100vh"
         bgColor="green.300"
         templateRows="repeat(6, 1fr)"
@@ -94,10 +101,9 @@ export function Lobby({ players, gameName, game }: Props) {
           <HStack justifyContent="space-evenly" minW="100vh" wrap="wrap">
             {playerPiles.map((pile, i) => (
               <Pile
-                cards={pile}
+                cards={[]}
                 pileId={`${i + 1}`}
-                name={players[i + 1]}
-                shuffle={shufflePile}
+                name={game.players[i + 1].name}
                 isPlayerHand
               />
             ))}
@@ -106,18 +112,38 @@ export function Lobby({ players, gameName, game }: Props) {
         <GridItem rowSpan={4} colSpan={1} alignItems="center" maxH="50vh">
           <Center h="100%">
             <HStack wrap="wrap" maxH="100%" justifyContent="space-evenly">
-              <Button onClick={onClick} h="7em" w="5.5em">
+              <Button
+                onClick={() =>
+                  addDeck({
+                    deckType: DECK_TYPES.STANDARD,
+                    isFaceUp: true,
+                    code: game.code,
+                  })
+                }
+                h="7em"
+                w="5.5em"
+              >
                 add a pile
               </Button>
               <NewPileMenu />
               {remainingPiles.length > 0 &&
                 remainingPiles.map((pile, i) => (
                   <Pile
-                    cards={pile}
-                    pileId={`${i + players.length}`}
+                    cards={[]}
+                    pileId={`${i + game.players.length}`}
                     name={i === 0 ? "Pick up" : "Discard"}
                     isFaceUp={i === 0}
-                    shuffle={shufflePile}
+                  />
+                ))}
+            </HStack>
+            <HStack>
+              {remotePiles &&
+                remotePiles.map((pile, i) => (
+                  <Pile
+                    cards={pile.cards}
+                    pileId={`${i + game.players.length}`}
+                    name={i === 0 ? "Pick up" : "Discard"}
+                    isFaceUp={pile.isFaceUp}
                   />
                 ))}
             </HStack>
@@ -126,12 +152,11 @@ export function Lobby({ players, gameName, game }: Props) {
         <GridItem rowSpan={1} colSpan={1} mavH="8em">
           {piles[0] && (
             <Pile
-              cards={piles[0]}
+              cards={[]}
               pileId="0"
               name="Player 1"
               isFaceUp
               isSpread
-              shuffle={shufflePile}
               isPlayerHand
             />
           )}

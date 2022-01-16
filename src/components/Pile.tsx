@@ -1,15 +1,16 @@
 import { Box, VStack, Text, HStack, Button } from "@chakra-ui/react";
 import React from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
+import { Card } from "../api/gameBoardObjects/Card";
 
 type Props = {
-  cards: { value: string; id: string }[];
+  cards: Card[];
   pileId: string;
   isFaceUp?: boolean;
   isSpread?: boolean;
   isPlayerHand?: boolean;
   name: string;
-  shuffle?: (cards: { value: string; id: string }[]) => void;
+  shuffle?: (cards: Card[]) => void;
 };
 
 const getItemStyle = (isDragging: any, draggableStyle: any) => ({
@@ -57,7 +58,11 @@ export function Pile({
           >
             {isSpread
               ? cards.map((item, index) => (
-                  <Draggable key={item.id} draggableId={item.id} index={index}>
+                  <Draggable
+                    key={item.id}
+                    draggableId={item.id.toString()}
+                    index={index}
+                  >
                     {(provided, snapshot) => (
                       <Box
                         h="7em"
@@ -74,7 +79,7 @@ export function Pile({
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                       >
-                        {isFaceUp ? item.id : "back of card"}
+                        {isFaceUp ? item.value : "back of card"}
                       </Box>
                     )}
                   </Draggable>
@@ -82,7 +87,7 @@ export function Pile({
               : topCard && (
                   <Draggable
                     key={topCard.id}
-                    draggableId={topCard.id}
+                    draggableId={topCard.id.toString()}
                     index={cards.length - 1}
                   >
                     {(provided, snapshot) => (
@@ -101,7 +106,7 @@ export function Pile({
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                       >
-                        {isFaceUp ? topCard.id : "back of card"}
+                        {isFaceUp ? topCard.value : "back of card"}
                       </Box>
                     )}
                   </Draggable>
@@ -112,7 +117,7 @@ export function Pile({
       </Droppable>
       <Text>{name}</Text>
       {isPlayerHand && <Button onClick={shuffleCards}>Shuffle</Button>}
-      <Text>cards: {cards.map((card) => card.value + ", ")}</Text>
+      <Text>amount: {cards.map(({ id }) => id + ", ")}</Text>
     </VStack>
   );
 }
