@@ -14,19 +14,21 @@ type Props = {
 };
 
 const getItemStyle = (isDragging: any, draggableStyle: any) => ({
-  // some basic styles to make the items look a bit nicer
-  userSelect: "none",
-  margin: `0 0 ${8}px 0`,
-
-  // change background colour if dragging
-  background: isDragging ? "lightgreen !important" : "grey !important",
-
   // styles we need to apply on draggables
   ...draggableStyle,
 });
 
-const getListStyle = (isDraggingOver: boolean) => ({
+const getListStyle = (
+  isDraggingOver: boolean,
+  items: number,
+  isSpread: boolean
+) => ({
   background: isDraggingOver ? "lightblue" : "lightgrey",
+  display: "flex",
+  justifyContent: "space-between",
+  width: isSpread ? items * 88 + 50 * items : "fit-content", // do not ask
+  minWidth: "115px",
+  maxWidth: !isSpread ? "115px" : "100000px",
 });
 
 export function Pile({
@@ -42,16 +44,18 @@ export function Pile({
   return (
     <VStack>
       <p>{`pileId: ${pileId}`}</p>
-      <Droppable droppableId={pileId}>
+      <Droppable droppableId={pileId} direction="horizontal">
         {(provided, snapshot) => (
-          <HStack
+          <div
             ref={provided.innerRef}
-            h="142px"
-            w="108px"
+            // height="142px"
+            // minW="108px"
+            // w="100%"
             style={{
               backgroundColor: "black",
               padding: "5px",
-              ...getListStyle(snapshot.isDraggingOver),
+              height: "142px",
+              ...getListStyle(snapshot.isDraggingOver, cards.length, isSpread),
             }}
           >
             {isSpread
@@ -65,7 +69,7 @@ export function Pile({
                       <Box
                         h="7em"
                         w="5.5em"
-                        my="10px"
+                        my="5px"
                         mx="5px"
                         borderRadius={6}
                         bgColor="white"
@@ -109,8 +113,8 @@ export function Pile({
                       <Box
                         h="7em"
                         w="5.5em"
-                        my="10px"
-                        mx="5px"
+                        my="5px"
+                        ml="8px"
                         borderRadius={6}
                         bgColor="white"
                         style={getItemStyle(
@@ -144,7 +148,7 @@ export function Pile({
                   </Draggable>
                 )}
             {provided.placeholder}
-          </HStack>
+          </div>
         )}
       </Droppable>
       <Text>{name}</Text>

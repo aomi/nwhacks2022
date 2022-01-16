@@ -16,6 +16,7 @@ import { NewPileMenu } from "../components/NewPileMenu";
 import { Pile } from "../components/Pile";
 import { useSocket } from "../contexts/provider";
 import { AddDeckEvent, DealEvent, MoveCardEvent } from "../events/GameEvents";
+import { ResetGameEvent } from "../events/LobbyEvents";
 
 export type Card = {
   id: string;
@@ -30,6 +31,7 @@ export function Lobby({ game }: Props) {
   const { send: addDeck } = useSocket<AddDeckEvent>("addDeck");
   const { send: moveCard } = useSocket<MoveCardEvent>("moveCard");
   const { send: dealCards } = useSocket<DealEvent>("deal");
+  const { send: resetGame } = useSocket<ResetGameEvent>("reset");
 
   const handId = useMemo(
     () => game.players[game.players.length - 1].handId,
@@ -104,54 +106,44 @@ export function Lobby({ game }: Props) {
           )}
         </GridItem>
         <GridItem rowSpan={4} colSpan={1}>
-          <VStack
-            w="75%"
-            h="75%"
-            justifyContent="space-evenly"
-            ml="1"
-            bgColor="whiteAlpha.700"
-            px="2"
-            borderRadius={3}
-          >
-            <Button
-              bgColor="blue.300"
-              _hover={{
-                bgColor: "blue.500",
-                color: "white",
-              }}
-              aria-label="Deal cards"
+          <Center h="100%" w="75%">
+            <VStack
               w="100%"
-              onClick={() =>
-                dealCards({ code: game.code, handSize: 5, srcPileId: 2 })
-              }
+              h="50%"
+              justifyContent="space-evenly"
+              ml="1"
+              bgColor="whiteAlpha.700"
+              px="2"
+              borderRadius={3}
             >
-              Deal
-            </Button>
-            <Button
-              w="100%"
-              bgColor="red.300"
-              _hover={{
-                bgColor: "red.500",
-                color: "white",
-              }}
-              aria-label="Reset the board"
-            >
-              Reset
-            </Button>
-            <Button
-              w="100%"
-              bgColor="green.500"
-              color="white"
-              _hover={{
-                bgColor: "green.300",
-                color: "black",
-              }}
-              alignSelf="flex-end"
-              aria-label="Start the game"
-            >
-              Start
-            </Button>
-          </VStack>
+              <Button
+                bgColor="blue.300"
+                _hover={{
+                  bgColor: "blue.500",
+                  color: "white",
+                }}
+                aria-label="Deal cards"
+                w="100%"
+                onClick={() =>
+                  dealCards({ code: game.code, handSize: 5, srcPileId: 2 })
+                }
+              >
+                Deal
+              </Button>
+              <Button
+                w="100%"
+                bgColor="red.300"
+                _hover={{
+                  bgColor: "red.500",
+                  color: "white",
+                }}
+                aria-label="Reset the board"
+                onClick={() => resetGame({ code: game.code })}
+              >
+                Reset
+              </Button>
+            </VStack>
+          </Center>
         </GridItem>
         <GridItem rowSpan={4} colSpan={6} alignItems="center" maxH="50vh">
           <Center h="100%">
