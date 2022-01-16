@@ -1,4 +1,4 @@
-import { Box, VStack, Text, HStack } from "@chakra-ui/react";
+import { Box, VStack, Text, HStack, Image } from "@chakra-ui/react";
 import React from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import { Card } from "../api/gameBoardObjects/Card";
@@ -75,9 +75,24 @@ export function Pile({
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                       >
-                        {isFaceUp
-                          ? `${item.value} ${item.suit}`
-                          : "back of card"}
+                        {isFaceUp ? (
+                          <Image
+                            src={
+                              process.env.PUBLIC_URL +
+                              `/assets/cards/${item.suit.toLowerCase()}/${
+                                item.value + 1
+                              }.png`
+                            }
+                            alt={`The ${item.value} of ${item.suit}`}
+                          />
+                        ) : (
+                          <Image
+                            src={
+                              process.env.PUBLIC_URL + "/assets/cards/back.png"
+                            }
+                            alt="The back of a playing card"
+                          />
+                        )}
                       </Box>
                     )}
                   </Draggable>
@@ -104,9 +119,24 @@ export function Pile({
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                       >
-                        {isFaceUp
-                          ? `${topCard.value} ${topCard.suit}`
-                          : "back of card"}
+                        {isFaceUp ? (
+                          <Image
+                            src={
+                              process.env.PUBLIC_URL +
+                              `/assets/cards/${topCard.suit.toLowerCase()}/${
+                                topCard.value + 1
+                              }.png`
+                            }
+                            alt={`The ${topCard.value} of ${topCard.suit}`}
+                          />
+                        ) : (
+                          <Image
+                            src={
+                              process.env.PUBLIC_URL + "/assets/cards/back.png"
+                            }
+                            alt="The back of a playing card"
+                          />
+                        )}
                       </Box>
                     )}
                   </Draggable>
