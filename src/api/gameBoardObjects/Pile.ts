@@ -15,16 +15,16 @@ export class Pile {
             case DECK_TYPES.STANDARD: {
                 this.cards = [];
                 for (let i = 0; i < 13; i++) {
-                    this.cards.push(new Card(i, Suit.SPADES, nextAvailableId));
+                    this.cards.push(new Card(i, Suit.SPADES, nextAvailableId+i));
                 }
                 for (let i = 0; i < 13; i++) {
-                    this.cards.push(new Card(i, Suit.DIAMONDS, nextAvailableId+13));
+                    this.cards.push(new Card(i, Suit.DIAMONDS, nextAvailableId+13+i));
                 }                
                 for (let i = 0; i < 13; i++) {
-                    this.cards.push(new Card(i, Suit.CLUBS, nextAvailableId+26));
+                    this.cards.push(new Card(i, Suit.CLUBS, nextAvailableId+26+i));
                 }                
                 for (let i = 0; i < 13; i++) {
-                    this.cards.push(new Card(i, Suit.HEARTS, nextAvailableId+39));
+                    this.cards.push(new Card(i, Suit.HEARTS, nextAvailableId+39+i));
                 }
                 break;   
             }
