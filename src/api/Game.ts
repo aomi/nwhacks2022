@@ -29,6 +29,8 @@ export class Game {
       this.gameState != GameState.LOBBY
     )
       return;
+    this.piles.push(new Pile(this.nextPlayerId, DECK_TYPES.EMPTY, false));
+    player.handId = this.piles.length-1;
     this.players.push(player);
     this.nextPlayerId += 1;
   }
@@ -60,5 +62,18 @@ export class Game {
     const srcIdx = srcPile.cards.indexOf(card);
     srcPile.cards.splice(srcIdx, 1);
     this.piles[destPileId].cards.push(card);
+  }
+
+  deal(srcPileId: number, handSize: number) {
+    let playerIdx = 0;
+    const srcPile = this.piles[srcPileId];
+    let cardsDealt = 0;
+    while (srcPile.cards.length > 0 && cardsDealt < handSize*this.players.length) {
+        let card = srcPile.cards.pop();
+        let playerHand = this.piles[this.players[playerIdx].handId]
+        playerHand.cards.push(card);
+        playerIdx = (playerIdx + 1) % this.players.length;
+        cardsDealt += 1;
+    }
   }
 }

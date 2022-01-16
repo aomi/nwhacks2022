@@ -1,6 +1,5 @@
 export enum GameState {
     LOBBY,
-    GAME_CONFIG,
     GAMEPLAY
 }
 

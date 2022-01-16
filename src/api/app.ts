@@ -10,6 +10,7 @@ import {
 } from "../events/LobbyEvents";
 import {
   AddDeckEvent,
+  DealEvent,
   MoveCardEvent,
   RemoveDeckEvent,
   ShuffleEvent,
@@ -105,11 +106,19 @@ io.on("connection", (socket) => {
     socket.to(game.code).emit("clientUpdate", game);
   });
 
-  // Removing a new deck
+  // Move card
   socket.on("moveCard", (event: MoveCardEvent) => {
     console.log("Moving card" + event.card + " from game: " + event.code);
     const game = manager.activeGames.get(event.code);
     game.moveCard(event.card, event.srcPileId, event.destPileId);
+    socket.to(game.code).emit("clientUpdate", game);
+  });
+  
+  // Deal event
+  socket.on("moveCard", (event: DealEvent) => {
+    console.log("Dealing " + event.handSize + "cards in game: " + event.code);
+    const game = manager.activeGames.get(event.code);
+    game.deal(event.srcPileId, event.handSize);
     socket.to(game.code).emit("clientUpdate", game);
   });
 });

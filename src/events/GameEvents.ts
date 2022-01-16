@@ -23,3 +23,9 @@ export interface MoveCardEvent {
     destPileId: number,
     card: Card
 }
+
+export interface DealEvent {
+    code: string,
+    srcPileId: number,
+    handSize: number
+}

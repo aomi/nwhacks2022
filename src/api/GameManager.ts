@@ -23,7 +23,6 @@ export class GameManager {
         do {
             code = getRandomCharacterCode();
         } while (this.activeGames.has(code));
-
         const hostPlayer = new Player(playerName, 0);
         const newGame = new Game(code, gameName, maxPlayers, hostPlayer);
         this.activeGames.set(code, newGame);
@@ -39,25 +38,21 @@ export class GameManager {
         return game;
     }
 
-    setGameState(code: string, newState: GameState) {
+    setGameState(code: string, newState: GameState, initialHandSize?: number) {
         const game = this.activeGames.get(code);
         game.setGameState(newState);
-        switch(newState) {
-            case GameState.LOBBY: {
-                break;
-            }            
-            case GameState.GAME_CONFIG: {
-                game.resetGame()
-                game.nextAvailableCardId = 0;
-                break;
-            }
-            case GameState.GAMEPLAY: {
-                break;
-            }
-            default: {
-                break;
-            }
-        }
+        // switch(newState) {
+        //     case GameState.LOBBY: {
+        //         break;
+        //     }            
+        //     case GameState.GAMEPLAY: {
+        //         game.deal 
+        //         break;
+        //     }
+        //     default: {
+        //         break;
+        //     }
+        // }
         return game;
     }
 
