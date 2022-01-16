@@ -17,11 +17,11 @@ import {
 import React, { useMemo, useState } from "react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { Game } from "../api/Game";
-import { DealMenu } from "../components/DealMenu";
 import { NewPileMenu } from "../components/NewPileMenu";
 import { Pile } from "../components/Pile";
 import { useSocket } from "../contexts/provider";
 import { AddDeckEvent, DealEvent, MoveCardEvent } from "../events/GameEvents";
+import { ResetGameEvent } from "../events/LobbyEvents";
 
 export type Card = {
   id: string;
@@ -36,6 +36,7 @@ export function Lobby({ game }: Props) {
   const { send: addDeck } = useSocket<AddDeckEvent>("addDeck");
   const { send: moveCard } = useSocket<MoveCardEvent>("moveCard");
   const { send: dealCards } = useSocket<DealEvent>("deal");
+  const { send: resetGame } = useSocket<ResetGameEvent>("reset");
 
   const [dealAmount, setDealAmount] = useState(0);
   const handleChange = (value) => setDealAmount(value);
@@ -164,6 +165,7 @@ export function Lobby({ game }: Props) {
                   color: "white",
                 }}
                 aria-label="Reset the board"
+                onClick={() => resetGame({ code: game.code })}
               >
                 Reset
               </Button>

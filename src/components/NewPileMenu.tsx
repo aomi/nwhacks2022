@@ -92,7 +92,7 @@ export function NewPileMenu({ onSubmit }: NewPileProps) {
                   isChecked={isFanned}
                   onChange={() => setIsFanned(!isFanned)}
                 >
-                  Fan it out? (Recommended with only Discard)
+                  Fan it out? (Recommended only with Empty Piles)
                 </Checkbox>
               </VStack>
             </AlertDialogBody>
