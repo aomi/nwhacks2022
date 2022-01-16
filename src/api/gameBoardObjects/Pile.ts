@@ -6,7 +6,7 @@ export class Pile {
     name: string;
     isFaceUp: boolean;
     
-    constructor(deckType: DECK_TYPES, shuffle?: boolean) {
+    constructor(deckType: DECK_TYPES, shuffle: boolean = true) {
         switch(deckType) {
             case DECK_TYPES.EMPTY: {
                 this.cards = [];
@@ -30,7 +30,7 @@ export class Pile {
             }
             default: break;
         }
-        if (shuffle != undefined && shuffle) {
+        if (shuffle) {
             this.shuffle();
         }
     }

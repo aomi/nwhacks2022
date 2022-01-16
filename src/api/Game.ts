@@ -11,8 +11,7 @@ export class Game  {
     players: Player[];
     nextPlayerId: number;
     gameState: GameState;
-    hands: Pile[];
-    board: Pile[];
+    piles: Pile[];
     
     constructor(code: string, name: string, maxPlayers: number, host: Player) {
         this.code = code;
@@ -34,10 +33,17 @@ export class Game  {
     }
 
     resetGame() {
-        this.hands = [];
+        this.piles = [];
         for (let player in this.players) {
-            this.hands.push(new Pile(DECK_TYPES.EMPTY));
+            this.piles.push(new Pile(DECK_TYPES.EMPTY));
         }
-        this.board = [];
+    }
+
+    addDeck(deckType: DECK_TYPES) {
+        this.piles.push(new Pile(deckType))
+    }
+
+    removeDeck(id: number) {
+        this.piles.splice(id);
     }
 }

@@ -11,6 +11,7 @@ export interface JoinEvent {
     playerName: string
 }
 
+// This event is for going into the game config state, starting a game, and retunring to a lobby.
 export interface ChangeGameStateEvent {
     code: string,
     newState: GameState

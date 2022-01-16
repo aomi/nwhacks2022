@@ -4,6 +4,7 @@ import { Server } from "socket.io";
 import cors from "cors";
 import { GameManager } from "./GameManager";
 import { ChangeGameStateEvent, CreateEvent, JoinEvent } from "../events/LobbyEvents";
+import { AddDeckEvent, RemoveDeckEvent } from "../events/GameEvents";
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -65,10 +66,26 @@ io.on("connection", (socket) => {
     }
   });
 
-  // StartGameConfig Event
-  socket.on('join', (event: ChangeGameStateEvent) => {
+  // Change game state Event
+  socket.on('updateState', (event: ChangeGameStateEvent) => {
     console.log('Changing game: ' + event.code + ' to ' + event.newState);
     const game = manager.setGameState(event.code, event.newState);
+    socket.to(game.code).emit("clientUpdate", game);
+  });
+
+  // Adding a new deck
+  socket.on('addDeck', (event: AddDeckEvent) => {
+    console.log('Adding deck to game: ' + event.code);
+    const game = manager.activeGames.get(event.code);
+    game.addDeck(event.deckType);
+    socket.to(game.code).emit("clientUpdate", game);
+  });
+
+  // Removing a new deck
+  socket.on('removeDeck', (event: RemoveDeckEvent) => {
+    console.log('Removing deck ' + event.pileId + ' from game: ' + event.code);
+    const game = manager.activeGames.get(event.code);
+    game.removeDeck(event.pileId);
     socket.to(game.code).emit("clientUpdate", game);
   });
 });
