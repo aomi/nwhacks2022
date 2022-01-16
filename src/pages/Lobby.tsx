@@ -5,13 +5,19 @@ import {
   Grid,
   GridItem,
   HStack,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
   Spinner,
   Text,
   VStack,
 } from "@chakra-ui/react";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { Game } from "../api/Game";
+import { DealMenu } from "../components/DealMenu";
 import { NewPileMenu } from "../components/NewPileMenu";
 import { Pile } from "../components/Pile";
 import { useSocket } from "../contexts/provider";
@@ -30,6 +36,9 @@ export function Lobby({ game }: Props) {
   const { send: addDeck } = useSocket<AddDeckEvent>("addDeck");
   const { send: moveCard } = useSocket<MoveCardEvent>("moveCard");
   const { send: dealCards } = useSocket<DealEvent>("deal");
+
+  const [dealAmount, setDealAmount] = useState(0);
+  const handleChange = (value) => setDealAmount(value);
 
   const handId = useMemo(
     () => game.players[game.players.length - 1].handId,
@@ -104,30 +113,49 @@ export function Lobby({ game }: Props) {
           )}
         </GridItem>
         <GridItem rowSpan={4} colSpan={1}>
-          <Center h="100%" w="75%">
+          <Center h="100%" w="100%">
             <VStack
               w="100%"
               h="50%"
               justifyContent="space-evenly"
               ml="1"
-              bgColor="whiteAlpha.700"
+              bgColor="blackAlpha.700"
               px="2"
               borderRadius={3}
             >
-              <Button
-                bgColor="blue.300"
-                _hover={{
-                  bgColor: "blue.500",
-                  color: "white",
-                }}
-                aria-label="Deal cards"
-                w="100%"
-                onClick={() =>
-                  dealCards({ code: game.code, handSize: 5, srcPileId: 2 })
-                }
-              >
-                Deal
-              </Button>
+              <HStack>
+                <Button
+                  w="100%"
+                  bgColor="blue.300"
+                  _hover={{
+                    bgColor: "blue.500",
+                    color: "white",
+                  }}
+                  aria-label="Deal cards from the first deck"
+                  onClick={() =>
+                    dealCards({
+                      code: game.code,
+                      handSize: dealAmount,
+                      srcPileId: remotePiles
+                        .map((_, i) => i)
+                        .filter((i) => !playerPileIds.includes(i))[0],
+                    })
+                  }
+                >
+                  Deal
+                </Button>
+                <NumberInput
+                  color="white"
+                  value={dealAmount}
+                  onChange={handleChange}
+                >
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+              </HStack>
               <Button
                 w="100%"
                 bgColor="red.300"
@@ -152,7 +180,7 @@ export function Lobby({ game }: Props) {
                 })
               }
             />
-            <HStack ml="2">
+            <HStack ml="2" wrap="wrap">
               {remotePiles &&
                 remotePiles
                   .map((p, i) => i)
@@ -161,7 +189,7 @@ export function Lobby({ game }: Props) {
                     <Pile
                       cards={remotePiles[i].cards}
                       pileId={`${i}`}
-                      name={i === 0 ? "Pick up" : "Discard"}
+                      name={`Pile ${i}`}
                       isFaceUp={remotePiles[i].isFaceUp}
                       isSpread={remotePiles[i].isSpread}
                     />

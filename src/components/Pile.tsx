@@ -25,8 +25,8 @@ const getListStyle = (
 ) => ({
   background: isDraggingOver ? "lightblue" : "lightgrey",
   display: "flex",
-  justifyContent: "space-between",
-  width: isSpread ? items * 88 + 50 * items : "fit-content", // do not ask
+  justifyContent: "space-evenly",
+  width: isSpread ? (items + 1) * 115 : "fit-content", // do not ask
   minWidth: "115px",
   maxWidth: !isSpread ? "115px" : "100000px",
 });
@@ -48,9 +48,6 @@ export function Pile({
         {(provided, snapshot) => (
           <div
             ref={provided.innerRef}
-            // height="142px"
-            // minW="108px"
-            // w="100%"
             style={{
               backgroundColor: "black",
               padding: "5px",
@@ -114,7 +111,6 @@ export function Pile({
                         h="7em"
                         w="5.5em"
                         my="5px"
-                        ml="8px"
                         borderRadius={6}
                         bgColor="white"
                         style={getItemStyle(
