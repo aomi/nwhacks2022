@@ -124,6 +124,16 @@ export function Lobby({ game }: Props) {
               px="2"
               borderRadius={3}
             >
+              <VStack p="2">
+                <Text color="white" textAlign="center">
+                  Send the code to your friends!
+                </Text>
+                <HStack>
+                  <Text fontWeight="bold" color="white">
+                    {`${window.location.hostname}/lobbly/${game.code}`}
+                  </Text>
+                </HStack>
+              </VStack>
               <HStack>
                 <Button
                   w="100%"
