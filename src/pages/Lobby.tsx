@@ -1,4 +1,14 @@
-import { Button, Center, Grid, GridItem, HStack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Center,
+  Grid,
+  GridItem,
+  HStack,
+  Spinner,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import React, { useMemo } from "react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { Game } from "../api/Game";
@@ -61,52 +71,99 @@ export function Lobby({ game }: Props) {
     <DragDropContext onDragEnd={onDragEnd}>
       <Grid
         minW="100vh"
+        minH="100vh"
         maxH="100vh"
         bgColor="green.300"
+        style={{
+          backgroundImage:
+            'url("https://www.transparenttextures.com/patterns/45-degree-fabric-dark.png")',
+        }}
         templateRows="repeat(6, 1fr)"
-        templateColumns="repeat(1, 1fr)"
+        templateColumns="repeat(8, 1fr)"
         py="6"
       >
-        <GridItem colSpan={1} rowSpan={1} h="fit-content" maxH="8em">
-          <HStack justifyContent="space-evenly" minW="100vh" wrap="wrap">
-            {game.players
-              .filter((player) => handId !== player.handId)
-              .map((player) => (
-                <Pile
-                  cards={remotePiles[player.handId].cards}
-                  pileId={`${player.handId}`}
-                  name={player.name}
-                  isPlayerHand
-                />
-              ))}
-          </HStack>
-        </GridItem>
-        <GridItem rowSpan={4} colSpan={1} alignItems="center" maxH="50vh">
-          <Center h="100%">
-            <HStack wrap="wrap" maxH="100%" justifyContent="space-evenly">
-              {/* <Button
-                onClick={() =>
-                  addDeck({
-                    deckType: DECK_TYPES.STANDARD,
-                    isFaceUp: true,
-                    code: game.code,
-                  })
-                }
-                h="7em"
-                w="5.5em"
-              >
-                add a pile
-              </Button> */}
-              <NewPileMenu
-                onSubmit={(e) =>
-                  addDeck({
-                    ...e,
-                    code: game.code,
-                  })
-                }
-              />
+        <GridItem colSpan={8} rowSpan={1} h="fit-content">
+          {game.players.length > 1 ? (
+            <HStack justifyContent="space-evenly" minW="100vh" wrap="wrap">
+              {game.players
+                .filter((player) => handId !== player.handId)
+                .map((player) => (
+                  <Pile
+                    cards={remotePiles[player.handId].cards}
+                    pileId={`${player.handId}`}
+                    name={player.name}
+                    isPlayerHand
+                  />
+                ))}
             </HStack>
-            <HStack>
+          ) : (
+            <VStack>
+              <Text>Waiting for players</Text>
+              <Spinner ml="3" />
+            </VStack>
+          )}
+        </GridItem>
+        <GridItem rowSpan={4} colSpan={1}>
+          <VStack
+            w="75%"
+            h="75%"
+            justifyContent="space-evenly"
+            ml="1"
+            bgColor="whiteAlpha.700"
+            px="2"
+            borderRadius={3}
+          >
+            <Button
+              bgColor="blue.300"
+              _hover={{
+                bgColor: "blue.500",
+                color: "white",
+              }}
+              aria-label="Deal cards"
+              w="100%"
+              onClick={() =>
+                dealCards({ code: game.code, handSize: 5, srcPileId: 2 })
+              }
+            >
+              Deal
+            </Button>
+            <Button
+              w="100%"
+              bgColor="red.300"
+              _hover={{
+                bgColor: "red.500",
+                color: "white",
+              }}
+              aria-label="Reset the board"
+            >
+              Reset
+            </Button>
+            <Button
+              w="100%"
+              bgColor="green.500"
+              color="white"
+              _hover={{
+                bgColor: "green.300",
+                color: "black",
+              }}
+              alignSelf="flex-end"
+              aria-label="Start the game"
+            >
+              Start
+            </Button>
+          </VStack>
+        </GridItem>
+        <GridItem rowSpan={4} colSpan={6} alignItems="center" maxH="50vh">
+          <Center h="100%">
+            <NewPileMenu
+              onSubmit={(e) =>
+                addDeck({
+                  ...e,
+                  code: game.code,
+                })
+              }
+            />
+            <HStack ml="2">
               {remotePiles &&
                 remotePiles
                   .map((p, i) => i)
@@ -122,7 +179,7 @@ export function Lobby({ game }: Props) {
             </HStack>
           </Center>
         </GridItem>
-        <GridItem rowSpan={1} colSpan={1} maxH="8em">
+        <GridItem rowSpan={1} colSpan={8}>
           {remotePiles[handId] && (
             <Pile
               cards={remotePiles[handId].cards}
@@ -136,13 +193,6 @@ export function Lobby({ game }: Props) {
         </GridItem>
       </Grid>
       {/* TODO: make it a modal or something not hardcoded and maybe by the pile :) */}
-      <Button
-        onClick={() =>
-          dealCards({ code: game.code, handSize: 5, srcPileId: 2 })
-        }
-      >
-        Deal
-      </Button>
     </DragDropContext>
   );
 }

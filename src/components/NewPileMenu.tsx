@@ -1,3 +1,4 @@
+import { AddIcon } from "@chakra-ui/icons";
 import {
   AlertDialog,
   AlertDialogBody,
@@ -44,7 +45,17 @@ export function NewPileMenu({ onSubmit }: NewPileProps) {
 
   return (
     <>
-      <Button onClick={() => setIsOpen(true)}>Add a Pile</Button>
+      <Button
+        h="142px"
+        w="108px"
+        border="dotted"
+        colorScheme="whiteAlpha"
+        color="black"
+        aria-label="Add a new pile"
+        onClick={() => setIsOpen(true)}
+      >
+        <AddIcon />
+      </Button>
       <AlertDialog
         leastDestructiveRef={cancelRef}
         isOpen={isOpen}

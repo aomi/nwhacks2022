@@ -46,6 +46,8 @@ export function Pile({
         {(provided, snapshot) => (
           <HStack
             ref={provided.innerRef}
+            h="142px"
+            w="108px"
             style={{
               backgroundColor: "black",
               padding: "5px",
