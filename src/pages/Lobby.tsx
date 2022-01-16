@@ -1,10 +1,8 @@
-import { Box, Button, HStack, VStack, Text } from "@chakra-ui/react";
+import { Button, HStack, Text } from "@chakra-ui/react";
 import React, { useCallback, useState } from "react";
 import {
   DragDropContext,
-  Draggable,
   DraggableLocation,
-  Droppable,
   DropResult,
 } from "react-beautiful-dnd";
 import { Card } from "../components/Card";
@@ -22,16 +20,6 @@ const getItems = (count: number, offset = 0): Result[] =>
     value: `item ${k + offset}`,
   }));
 
-// a little function to help us with reordering the result
-const reorder = (list: Result[], startIndex: number, endIndex: number) => {
-  const result = Array.from(list);
-  console.log(result);
-  const [removed] = result.splice(startIndex, 1);
-  result.splice(endIndex, 0, removed);
-
-  return result;
-};
-
 /**
  * Moves an item from one list to another list.
  */
@@ -39,19 +27,20 @@ const move = (
   source: Result[],
   destination: Result[],
   droppableSource: DraggableLocation,
-  droppableDestination: DraggableLocation
+  droppableDestination: DraggableLocation,
+  piles: Result[][]
 ) => {
   const sourceClone = Array.from(source);
   const destClone = Array.from(destination);
+  const pilesClone = Array.from(piles);
   const [removed] = sourceClone.splice(droppableSource.index, 1);
 
   destClone.push(removed);
 
-  const result: any = {};
-  result[droppableSource.droppableId] = sourceClone;
-  result[droppableDestination.droppableId] = destClone;
+  pilesClone[droppableSource.droppableId] = sourceClone;
+  pilesClone[droppableDestination.droppableId] = destClone;
 
-  return result;
+  return pilesClone;
 };
 
 const grid = 8;
@@ -76,38 +65,42 @@ const getListStyle = (isDraggingOver: any) => ({
 });
 
 export function Lobby() {
-  const [items, setItems] = useState(getItems(5));
-  const [selected, setSelected] = useState(getItems(5, 5));
-
-  const idList = [items, selected];
-
-  const getList = (id: number) => idList[id];
+  const [piles, setPiles] = useState<Result[][]>([]);
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
 
-    // dropped outside the list
+    // dropped outside the list or into same pile
     if (!destination || source.droppableId === destination.droppableId) {
       return;
     }
 
     const newResult = move(
-      getList(source.droppableId === "droppable" ? 0 : 1),
-      getList(destination.droppableId === "droppable" ? 0 : 1),
+      piles[source.droppableId],
+      piles[destination.droppableId],
       source,
-      destination
+      destination,
+      piles
     );
 
-    setItems(newResult.droppable);
-    setSelected(newResult.droppable2);
+    setPiles(newResult);
+    console.log(piles);
   };
 
+  const onClick = useCallback(() => {
+    setPiles([...piles, getItems(5, 5 * piles.length)]);
+  }, [piles, setPiles]);
+
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <VStack spacing="10">
-        <Pile cards={items} name="droppable" />
-        <Pile cards={selected} name="droppable2" />
-      </VStack>
-    </DragDropContext>
+    <>
+      <Button onClick={onClick}>add a pile</Button>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <HStack spacing="10" minW="100vh" wrap="wrap">
+          {piles.map((pile, i) => (
+            <Pile cards={pile} name={`${i}`} />
+          ))}
+        </HStack>
+      </DragDropContext>
+    </>
   );
 }
