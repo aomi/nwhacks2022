@@ -72,7 +72,7 @@ io.on("connection", (socket) => {
   socket.on("join", (event: JoinEvent) => {
     console.log("Joining a game: " + event.code);
     const game = manager.joinGame(event.code, event.playerName);
-    if (game === null) {
+    if (game === undefined) {
       console.log("No game with found with code: " + event.code);
     } else {
       console.log(game);
@@ -92,48 +92,79 @@ io.on("connection", (socket) => {
   socket.on("addDeck", (event: AddDeckEvent) => {
     console.log("Adding deck to game: " + event.code);
     const game = manager.activeGames.get(event.code);
-    game.addDeck(event.deckType, event.isFaceUp, event.isFanned);
-    io.to(game.code).emit("clientUpdate", game);
+    if (game === undefined) {
+      console.log("No game with found with code: " + event.code);
+      socket.emit("error", "No game with found with code: " + event.code);
+    } else {
+      game.addDeck(event.deckType, event.isFaceUp, event.isFanned);
+      io.to(game.code).emit("clientUpdate", game);
+    }
   });
 
   // Removing a new deck
   socket.on("removeDeck", (event: RemoveDeckEvent) => {
     console.log("Removing deck " + event.pileId + " from game: " + event.code);
     const game = manager.activeGames.get(event.code);
-    game.removeDeck(event.pileId);
-    io.to(game.code).emit("clientUpdate", game);
+    if (game === undefined) {
+      console.log("No game with found with code: " + event.code);
+      socket.emit("error", "No game with found with code: " + event.code);
+    } else {
+      game.removeDeck(event.pileId);
+      io.to(game.code).emit("clientUpdate", game);
+    }
   });
 
   // Shuffle a pile
   socket.on("shuffle", (event: ShuffleEvent) => {
     console.log("Shuffling deck " + event.pileId + " from game: " + event.code);
     const game = manager.activeGames.get(event.code);
-    game.piles[event.pileId].shuffle();
-    io.to(game.code).emit("clientUpdate", game);
+    if (game === undefined) {
+      console.log("No game with found with code: " + event.code);
+      socket.emit("error", "No game with found with code: " + event.code);
+    } else {
+      game.piles[event.pileId].shuffle();
+      io.to(game.code).emit("clientUpdate", game);
+    }
   });
 
   // Move card
   socket.on("moveCard", (event: MoveCardEvent) => {
     console.log("Moving card" + event.card + " from game: " + event.code);
     const game = manager.activeGames.get(event.code);
-    game.moveCard(event.card, event.srcPileId, event.destPileId);
-    io.to(game.code).emit("clientUpdate", game);
+    console.log(game);
+    if (game === undefined) {
+      console.log("No game with found with code: " + event.code);
+      socket.emit("error", "No game with found with code: " + event.code);
+    } else {
+      game.moveCard(event.card, event.srcPileId, event.destPileId);
+      io.to(game.code).emit("clientUpdate", game);
+    }
   });
 
   // Deal event
   socket.on("deal", (event: DealEvent) => {
     console.log("Dealing " + event.handSize + "cards in game: " + event.code);
     const game = manager.activeGames.get(event.code);
-    game.deal(event.srcPileId, event.handSize);
-    io.to(game.code).emit("clientUpdate", game);
+    if (game === undefined) {
+      console.log("No game with found with code: " + event.code);
+      socket.emit("error", "No game with found with code: " + event.code);
+    } else {
+      game.deal(event.srcPileId, event.handSize);
+      io.to(game.code).emit("clientUpdate", game);
+    }
   });
 
   // Reset game event
   socket.on("reset", (event: ResetGameEvent) => {
     console.log("Resetting game: " + event.code);
     const game = manager.activeGames.get(event.code);
-    game.resetGame();
-    io.to(game.code).emit("clientUpdate", game);
+    if (game === undefined) {
+      console.log("No game with found with code: " + event.code);
+      socket.emit("error", "No game with found with code: " + event.code);
+    } else {
+      game.resetGame();
+      io.to(game.code).emit("clientUpdate", game);
+    }
   });
 });
 
