@@ -10,8 +10,8 @@ export class Pile {
     nextAvailableId: number,
     deckType: DECK_TYPES,
     isFaceUp: boolean,
-    shuffle: boolean = true,
-    isSpread: boolean = false
+    isSpread: boolean = false,
+    dontShuffle: boolean = false,
   ) {
     this.isFaceUp = isFaceUp;
     switch (deckType) {
@@ -38,7 +38,7 @@ export class Pile {
       default:
         break;
     }
-    if (shuffle) {
+    if (!dontShuffle) {
       this.shuffle();
     }
     this.isSpread = isSpread;
