@@ -116,6 +116,7 @@ export function Lobby({ game }: Props) {
               px="2"
               borderRadius={3}
             >
+              <Text fontSize='xl'>Join: {game.code}</Text>
               <Button
                 bgColor="blue.300"
                 _hover={{
