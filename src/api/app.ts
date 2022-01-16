@@ -60,7 +60,7 @@ io.on("connection", (socket) => {
     );
     console.log(newGame);
     socket.join(newGame.code);
-    socket.to(newGame.code).emit("clientUpdate", newGame);
+    io.to(newGame.code).emit("clientUpdate", newGame);
   });
 
   // Join event
@@ -71,7 +71,8 @@ io.on("connection", (socket) => {
       console.log("No game with found with code: " + event.code);
     } else {
       console.log(game);
-      socket.to(game.code).emit("clientUpdate", game);
+      socket.join(game.code);
+      io.to(game.code).emit("clientUpdate", game);
     }
   });
 
@@ -79,7 +80,7 @@ io.on("connection", (socket) => {
   socket.on("updateState", (event: ChangeGameStateEvent) => {
     console.log("Changing game: " + event.code + " to " + event.newState);
     const game = manager.setGameState(event.code, event.newState);
-    socket.to(game.code).emit("clientUpdate", game);
+    io.to(game.code).emit("clientUpdate", game);
   });
 
   // Adding a new deck
@@ -87,7 +88,7 @@ io.on("connection", (socket) => {
     console.log("Adding deck to game: " + event.code);
     const game = manager.activeGames.get(event.code);
     game.addDeck(event.deckType, event.isFaceUp);
-    socket.to(game.code).emit("clientUpdate", game);
+    io.to(game.code).emit("clientUpdate", game);
   });
 
   // Removing a new deck
@@ -95,7 +96,7 @@ io.on("connection", (socket) => {
     console.log("Removing deck " + event.pileId + " from game: " + event.code);
     const game = manager.activeGames.get(event.code);
     game.removeDeck(event.pileId);
-    socket.to(game.code).emit("clientUpdate", game);
+    io.to(game.code).emit("clientUpdate", game);
   });
 
   // Shuffle a pile
@@ -103,7 +104,7 @@ io.on("connection", (socket) => {
     console.log("Shuffling deck " + event.pileId + " from game: " + event.code);
     const game = manager.activeGames.get(event.code);
     game.piles[event.pileId].shuffle();
-    socket.to(game.code).emit("clientUpdate", game);
+    io.to(game.code).emit("clientUpdate", game);
   });
 
   // Move card
@@ -111,15 +112,15 @@ io.on("connection", (socket) => {
     console.log("Moving card" + event.card + " from game: " + event.code);
     const game = manager.activeGames.get(event.code);
     game.moveCard(event.card, event.srcPileId, event.destPileId);
-    socket.to(game.code).emit("clientUpdate", game);
+    io.to(game.code).emit("clientUpdate", game);
   });
-  
+
   // Deal event
   socket.on("moveCard", (event: DealEvent) => {
     console.log("Dealing " + event.handSize + "cards in game: " + event.code);
     const game = manager.activeGames.get(event.code);
     game.deal(event.srcPileId, event.handSize);
-    socket.to(game.code).emit("clientUpdate", game);
+    io.to(game.code).emit("clientUpdate", game);
   });
 });
 
