@@ -1,11 +1,10 @@
-import { Button, HStack, Text } from "@chakra-ui/react";
+import { Button, HStack } from "@chakra-ui/react";
 import React, { useCallback, useState } from "react";
 import {
   DragDropContext,
   DraggableLocation,
   DropResult,
 } from "react-beautiful-dnd";
-import { Card } from "../components/Card";
 import { Pile } from "../components/Pile";
 
 type Result = {
@@ -84,7 +83,6 @@ export function Lobby() {
     );
 
     setPiles(newResult);
-    console.log(piles);
   };
 
   const onClick = useCallback(() => {
@@ -97,7 +95,7 @@ export function Lobby() {
       <DragDropContext onDragEnd={onDragEnd}>
         <HStack spacing="10" minW="100vh" wrap="wrap">
           {piles.map((pile, i) => (
-            <Pile cards={pile} name={`${i}`} />
+            <Pile cards={pile} name={`${i}`} isSpread={i === 0} />
           ))}
         </HStack>
       </DragDropContext>

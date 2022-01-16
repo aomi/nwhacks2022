@@ -9,7 +9,7 @@ type Props = {
   isSpread?: boolean;
 };
 
-export function Pile({ cards, name }: Props) {
+export function Pile({ cards, name, isSpread }: Props) {
   const topCard = cards[cards.length - 1];
   return (
     <VStack>
@@ -19,31 +19,49 @@ export function Pile({ cards, name }: Props) {
             ref={provided.innerRef}
             style={{ backgroundColor: "black", padding: "5px" }}
           >
-            {/* {cards.map((item, index) => ( */}
-            {topCard && (
-              <Draggable
-                key={topCard.id}
-                draggableId={topCard.id}
-                index={cards.length - 1}
-              >
-                {(provided) => (
-                  <Box
-                    h="12em"
-                    w="9em"
-                    my="10px"
-                    mx="5px"
-                    borderRadius={6}
-                    bgColor="white"
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
+            {isSpread
+              ? cards.map((item, index) => (
+                  <Draggable key={item.id} draggableId={item.id} index={index}>
+                    {(provided) => (
+                      <Box
+                        h="12em"
+                        w="9em"
+                        my="10px"
+                        mx="5px"
+                        borderRadius={6}
+                        bgColor="white"
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      >
+                        {item.id}
+                      </Box>
+                    )}
+                  </Draggable>
+                ))
+              : topCard && (
+                  <Draggable
+                    key={topCard.id}
+                    draggableId={topCard.id}
+                    index={cards.length - 1}
                   >
-                    {topCard.id}
-                  </Box>
+                    {(provided) => (
+                      <Box
+                        h="12em"
+                        w="9em"
+                        my="10px"
+                        mx="5px"
+                        borderRadius={6}
+                        bgColor="white"
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      >
+                        {topCard.id}
+                      </Box>
+                    )}
+                  </Draggable>
                 )}
-              </Draggable>
-            )}
-            {/* ))} */}
             {provided.placeholder}
           </HStack>
         )}
