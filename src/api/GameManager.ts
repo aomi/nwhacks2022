@@ -48,6 +48,7 @@ export class GameManager {
             }            
             case GameState.GAME_CONFIG: {
                 game.resetGame()
+                game.nextAvailableCardId = 0;
                 break;
             }
             case GameState.GAMEPLAY: {

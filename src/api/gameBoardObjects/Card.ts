@@ -1,11 +1,13 @@
 import { Suit } from "../../enums/SharedEnums";
 
 export class Card {
-    value: number;
-    suit: Suit;
+    readonly value: number;
+    readonly suit: Suit;
+    readonly id: number; 
 
-    constructor(value: number, suit: Suit) {
+    constructor(value: number, suit: Suit, id:number) {
         this.value = value;
         this.suit = suit;
+        this.id = id;
     }
 }

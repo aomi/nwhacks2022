@@ -3,10 +3,10 @@ import { Card } from "./Card";
 
 export class Pile {
     cards: Card[];
-    name: string;
     isFaceUp: boolean;
     
-    constructor(deckType: DECK_TYPES, shuffle: boolean = true) {
+    constructor(nextAvailableId: number, deckType: DECK_TYPES, isFaceUp: boolean, shuffle: boolean = true) {
+        this.isFaceUp = isFaceUp;
         switch(deckType) {
             case DECK_TYPES.EMPTY: {
                 this.cards = [];
@@ -15,16 +15,16 @@ export class Pile {
             case DECK_TYPES.STANDARD: {
                 this.cards = [];
                 for (let i = 0; i < 13; i++) {
-                    this.cards.push(new Card(i, Suit.SPADES));
+                    this.cards.push(new Card(i, Suit.SPADES, nextAvailableId));
                 }
                 for (let i = 0; i < 13; i++) {
-                    this.cards.push(new Card(i, Suit.DIAMONDS));
+                    this.cards.push(new Card(i, Suit.DIAMONDS, nextAvailableId+13));
                 }                
                 for (let i = 0; i < 13; i++) {
-                    this.cards.push(new Card(i, Suit.CLUBS));
+                    this.cards.push(new Card(i, Suit.CLUBS, nextAvailableId+26));
                 }                
                 for (let i = 0; i < 13; i++) {
-                    this.cards.push(new Card(i, Suit.HEARTS));
+                    this.cards.push(new Card(i, Suit.HEARTS, nextAvailableId+39));
                 }
                 break;   
             }

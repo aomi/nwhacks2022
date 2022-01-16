@@ -4,7 +4,7 @@ import { Server } from "socket.io";
 import cors from "cors";
 import { GameManager } from "./GameManager";
 import { ChangeGameStateEvent, CreateEvent, JoinEvent } from "../events/LobbyEvents";
-import { AddDeckEvent, RemoveDeckEvent, ShuffleEvent } from "../events/GameEvents";
+import { AddDeckEvent, MoveCardEvent, RemoveDeckEvent, ShuffleEvent } from "../events/GameEvents";
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -77,7 +77,7 @@ io.on("connection", (socket) => {
   socket.on('addDeck', (event: AddDeckEvent) => {
     console.log('Adding deck to game: ' + event.code);
     const game = manager.activeGames.get(event.code);
-    game.addDeck(event.deckType);
+    game.addDeck(event.deckType, event.isFaceUp);
     socket.to(game.code).emit("clientUpdate", game);
   });
 
@@ -90,12 +90,20 @@ io.on("connection", (socket) => {
   });
 
   // Shuffle a pile
-    socket.on('shuffle', (event: ShuffleEvent) => {
-      console.log('Removing deck ' + event.pileId + ' from game: ' + event.code);
-      const game = manager.activeGames.get(event.code);
-      game.piles[event.pileId].shuffle();
-      socket.to(game.code).emit("clientUpdate", game);
-    });
+  socket.on('shuffle', (event: ShuffleEvent) => {
+    console.log('Shuffling deck ' + event.pileId + ' from game: ' + event.code);
+    const game = manager.activeGames.get(event.code);
+    game.piles[event.pileId].shuffle();
+    socket.to(game.code).emit("clientUpdate", game);
+  });
+
+      // Removing a new deck
+  socket.on('moveCard', (event: MoveCardEvent) => {
+    console.log('Moving card' + event.card + ' from game: ' + event.code);
+    const game = manager.activeGames.get(event.code);
+    game.moveCard(event.card, event.srcPileId, event.destPileId);
+    socket.to(game.code).emit("clientUpdate", game);
+  });
 });
 
 httpServer.listen(port, () => {

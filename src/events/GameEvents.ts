@@ -1,8 +1,10 @@
 import { DECK_TYPES } from "../enums/SharedEnums";
+import { Card } from "../api/gameBoardObjects/Card";
 
 export interface AddDeckEvent {
     code: string,
-    deckType: DECK_TYPES
+    deckType: DECK_TYPES,
+    isFaceUp: boolean
 }
 
 export interface RemoveDeckEvent {
@@ -13,4 +15,11 @@ export interface RemoveDeckEvent {
 export interface ShuffleEvent {
     code: string,
     pileId: number
+}
+
+export interface MoveCardEvent {
+    code: string,
+    srcPileId: number,
+    destPileId: number,
+    card: Card
 }
