@@ -46,6 +46,7 @@ export function Pile({
 
   return (
     <VStack>
+      <p>{`pileId: ${pileId}`}</p>
       <Droppable droppableId={pileId}>
         {(provided, snapshot) => (
           <HStack
@@ -79,7 +80,9 @@ export function Pile({
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                       >
-                        {isFaceUp ? item.value : "back of card"}
+                        {isFaceUp
+                          ? `${item.value} ${item.suit}`
+                          : "back of card"}
                       </Box>
                     )}
                   </Draggable>
@@ -118,8 +121,8 @@ export function Pile({
         )}
       </Droppable>
       <Text>{name}</Text>
-      {isPlayerHand && <Button onClick={shuffleCards}>Shuffle</Button>}
-      <Text>amount: {cards.map(({ id }) => id + ", ")}</Text>
+      {/* {isPlayerHand && <Button onClick={shuffleCards}>Shuffle</Button>} */}
+      {/* <Text>amount: {cards.map(({ id }) => id + ", ")}</Text> */}
     </VStack>
   );
 }

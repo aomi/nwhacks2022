@@ -10,37 +10,37 @@ import {
   Input,
   VStack,
   Text,
+  RadioGroup,
+  Radio,
 } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { DECK_TYPES } from "../enums/SharedEnums";
+import { AddDeckEvent } from "../events/GameEvents";
 
-export function NewPileMenu() {
+export type NewPileProps = {
+  onSubmit?: (event: Omit<AddDeckEvent, "code">) => void;
+};
+
+export function NewPileMenu({ onSubmit }: NewPileProps) {
   const [isOpen, setIsOpen] = useState(false);
   const onClose = () => setIsOpen(false);
   const cancelRef = useRef();
 
-  // Form data
-  const [isInvalid, setIsInvalid] = useState(false);
-  const [pileName, setPileName] = useState("");
   const [hasDeck, setHasDeck] = useState(false);
   const [isFaceUp, setIsFaceUp] = useState(false);
 
-  const onSubmit = useCallback(() => {
-    if (pileName.length < 1) {
-      setIsInvalid(true);
-      return;
+  const handleSubmit = useCallback(() => {
+    if (onSubmit) {
+      onSubmit({
+        deckType: hasDeck ? DECK_TYPES.STANDARD : DECK_TYPES.EMPTY,
+        isFaceUp,
+      });
     }
-    // API call
-    setPileName("");
+
     setHasDeck(false);
     setIsFaceUp(false);
     onClose();
-  }, [pileName, isFaceUp, hasDeck]);
-
-  useEffect(() => {
-    if (pileName.length >= 1) {
-      setIsInvalid(false);
-    }
-  }, [pileName]);
+  }, [isFaceUp, hasDeck]);
 
   return (
     <>
@@ -60,26 +60,19 @@ export function NewPileMenu() {
               Adding a pile gives you the opportunity to add a new spot to place
               and take cards or a new deck to play with.
               <VStack alignItems="left" mt="2">
-                {isInvalid && <Text color="red">Must have a pile name</Text>}
-                <Input
-                  placeholder="Pile name"
-                  value={pileName}
-                  isInvalid={isInvalid}
-                  onChange={({ currentTarget: { value } }) =>
-                    setPileName(value)
-                  }
-                />
-                <Checkbox
-                  isChecked={hasDeck}
-                  onChange={() => setHasDeck(!hasDeck)}
+                <RadioGroup
+                  onChange={(e) => {
+                    setHasDeck(e === "draw_pile");
+                  }}
                 >
-                  Has deck of cards
-                </Checkbox>
+                  <Radio value="draw_pile">Draw Pile</Radio>
+                  <Radio value="discard_pile">Discard Pile</Radio>
+                </RadioGroup>
                 <Checkbox
                   isChecked={isFaceUp}
                   onChange={() => setIsFaceUp(!isFaceUp)}
                 >
-                  Is face up
+                  Face Up?
                 </Checkbox>
               </VStack>
             </AlertDialogBody>
@@ -88,7 +81,7 @@ export function NewPileMenu() {
               <Button ref={cancelRef} onClick={onClose}>
                 Cancel
               </Button>
-              <Button colorScheme="green" onClick={onSubmit} ml={3}>
+              <Button colorScheme="green" onClick={handleSubmit} ml={3}>
                 Add
               </Button>
             </AlertDialogFooter>

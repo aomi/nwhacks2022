@@ -14,7 +14,7 @@ import { Game } from "../api/Game";
 import { NewPileMenu } from "../components/NewPileMenu";
 import { Pile } from "../components/Pile";
 import { useSocket } from "../contexts/provider";
-import { AddDeckEvent } from "../events/GameEvents";
+import { AddDeckEvent, MoveCardEvent } from "../events/GameEvents";
 import { move, shuffleArray } from "../utils/gameLogic";
 
 import { DECK_TYPES } from "../enums/SharedEnums";
@@ -36,22 +36,20 @@ type Props = {
 };
 
 export function Lobby({ game }: Props) {
-  const [piles, setPiles] = useState<Card[][]>([]);
   const { send: addDeck } = useSocket<AddDeckEvent>("addDeck");
+  const { send: moveCard } = useSocket<MoveCardEvent>("moveCard");
 
-  useEffect(() => {
-    setPiles(game.players.map(() => []));
-  }, [game.players]);
+  const handId = useMemo(
+    () => game.players[game.players.length - 1].handId,
+    []
+  );
+  const playerId = useMemo(() => game.players[game.players.length - 1].id, []);
 
   const remotePiles = game.piles;
 
-  const playerPiles = useMemo(
-    () => piles.slice(1, game.players.length),
-    [piles]
-  );
-  const remainingPiles = useMemo(
-    () => piles.slice(game.players.length),
-    [piles]
+  const playerPileIds = useMemo(
+    () => game.players.map((player) => player.handId),
+    [game]
   );
 
   const onDragEnd = (result: DropResult) => {
@@ -62,30 +60,20 @@ export function Lobby({ game }: Props) {
       return;
     }
 
-    const newResult = move(
-      piles[source.droppableId],
-      piles[destination.droppableId],
-      source,
-      destination,
-      piles
-    );
+    const srcPileId = parseInt(source.droppableId);
+    const destPileId = parseInt(destination.droppableId);
 
-    setPiles(newResult);
+    const card = game.piles[srcPileId].cards[source.index];
+    console.log(source, destination);
+    console.log(card);
+
+    moveCard({
+      code: game.code,
+      srcPileId,
+      destPileId,
+      card,
+    });
   };
-
-  const shufflePile = useCallback(
-    (array: Card[]) => {
-      const pilesClone = Array.from(piles);
-      const idx = piles.indexOf(array);
-      pilesClone[idx] = shuffleArray(array);
-      setPiles(pilesClone);
-    },
-    [piles, setPiles]
-  );
-
-  const onClick = useCallback(() => {
-    setPiles([...piles, getItems(5, 5 * piles.length)]);
-  }, [piles, setPiles]);
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
@@ -99,20 +87,22 @@ export function Lobby({ game }: Props) {
       >
         <GridItem colSpan={1} rowSpan={1} h="fit-content" maxH="8em">
           <HStack justifyContent="space-evenly" minW="100vh" wrap="wrap">
-            {playerPiles.map((pile, i) => (
-              <Pile
-                cards={[]}
-                pileId={`${i + 1}`}
-                name={game.players[i + 1].name}
-                isPlayerHand
-              />
-            ))}
+            {game.players
+              .filter((player) => handId !== player.handId)
+              .map((player) => (
+                <Pile
+                  cards={remotePiles[player.handId].cards}
+                  pileId={`${player.handId}`}
+                  name={player.name}
+                  isPlayerHand
+                />
+              ))}
           </HStack>
         </GridItem>
         <GridItem rowSpan={4} colSpan={1} alignItems="center" maxH="50vh">
           <Center h="100%">
             <HStack wrap="wrap" maxH="100%" justifyContent="space-evenly">
-              <Button
+              {/* <Button
                 onClick={() =>
                   addDeck({
                     deckType: DECK_TYPES.STANDARD,
@@ -124,37 +114,38 @@ export function Lobby({ game }: Props) {
                 w="5.5em"
               >
                 add a pile
-              </Button>
-              <NewPileMenu />
-              {remainingPiles.length > 0 &&
-                remainingPiles.map((pile, i) => (
-                  <Pile
-                    cards={[]}
-                    pileId={`${i + game.players.length}`}
-                    name={i === 0 ? "Pick up" : "Discard"}
-                    isFaceUp={i === 0}
-                  />
-                ))}
+              </Button> */}
+              <NewPileMenu
+                onSubmit={(e) =>
+                  addDeck({
+                    ...e,
+                    code: game.code,
+                  })
+                }
+              />
             </HStack>
             <HStack>
               {remotePiles &&
-                remotePiles.map((pile, i) => (
-                  <Pile
-                    cards={pile.cards}
-                    pileId={`${i + game.players.length}`}
-                    name={i === 0 ? "Pick up" : "Discard"}
-                    isFaceUp={pile.isFaceUp}
-                  />
-                ))}
+                remotePiles
+                  .map((p, i) => i)
+                  .filter((i) => !playerPileIds.includes(i))
+                  .map((i) => (
+                    <Pile
+                      cards={remotePiles[i].cards}
+                      pileId={`${i}`}
+                      name={i === 0 ? "Pick up" : "Discard"}
+                      isFaceUp={remotePiles[i].isFaceUp}
+                    />
+                  ))}
             </HStack>
           </Center>
         </GridItem>
-        <GridItem rowSpan={1} colSpan={1} mavH="8em">
-          {piles[0] && (
+        <GridItem rowSpan={1} colSpan={1} maxH="8em">
+          {remotePiles[handId] && (
             <Pile
-              cards={[]}
-              pileId="0"
-              name="Player 1"
+              cards={remotePiles[handId].cards}
+              pileId={`${handId}`}
+              name={game.players[playerId].name}
               isFaceUp
               isSpread
               isPlayerHand
