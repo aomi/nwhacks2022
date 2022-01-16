@@ -72,7 +72,7 @@ io.on("connection", (socket) => {
   socket.on("join", (event: JoinEvent) => {
     console.log("Joining a game: " + event.code);
     const game = manager.joinGame(event.code, event.playerName);
-    if (game === undefined) {
+    if (!game) {
       console.log("No game with found with code: " + event.code);
     } else {
       console.log(game);
@@ -92,7 +92,7 @@ io.on("connection", (socket) => {
   socket.on("addDeck", (event: AddDeckEvent) => {
     console.log("Adding deck to game: " + event.code);
     const game = manager.activeGames.get(event.code);
-    if (game === undefined) {
+    if (!game) {
       console.log("No game with found with code: " + event.code);
       socket.emit("error", "No game with found with code: " + event.code);
     } else {
@@ -105,7 +105,7 @@ io.on("connection", (socket) => {
   socket.on("removeDeck", (event: RemoveDeckEvent) => {
     console.log("Removing deck " + event.pileId + " from game: " + event.code);
     const game = manager.activeGames.get(event.code);
-    if (game === undefined) {
+    if (!game) {
       console.log("No game with found with code: " + event.code);
       socket.emit("error", "No game with found with code: " + event.code);
     } else {
@@ -118,7 +118,7 @@ io.on("connection", (socket) => {
   socket.on("shuffle", (event: ShuffleEvent) => {
     console.log("Shuffling deck " + event.pileId + " from game: " + event.code);
     const game = manager.activeGames.get(event.code);
-    if (game === undefined) {
+    if (!game) {
       console.log("No game with found with code: " + event.code);
       socket.emit("error", "No game with found with code: " + event.code);
     } else {
@@ -132,7 +132,7 @@ io.on("connection", (socket) => {
     console.log("Moving card" + event.card + " from game: " + event.code);
     const game = manager.activeGames.get(event.code);
     console.log(game);
-    if (game === undefined) {
+    if (!game) {
       console.log("No game with found with code: " + event.code);
       socket.emit("error", "No game with found with code: " + event.code);
     } else {
@@ -145,7 +145,7 @@ io.on("connection", (socket) => {
   socket.on("deal", (event: DealEvent) => {
     console.log("Dealing " + event.handSize + "cards in game: " + event.code);
     const game = manager.activeGames.get(event.code);
-    if (game === undefined) {
+    if (!game) {
       console.log("No game with found with code: " + event.code);
       socket.emit("error", "No game with found with code: " + event.code);
     } else {
@@ -158,7 +158,8 @@ io.on("connection", (socket) => {
   socket.on("reset", (event: ResetGameEvent) => {
     console.log("Resetting game: " + event.code);
     const game = manager.activeGames.get(event.code);
-    if (game === undefined) {
+    console.log(game);
+    if (!game) {
       console.log("No game with found with code: " + event.code);
       socket.emit("error", "No game with found with code: " + event.code);
     } else {
