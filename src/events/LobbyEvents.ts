@@ -16,3 +16,7 @@ export interface ChangeGameStateEvent {
     code: string,
     newState: GameState
 }
+
+export interface ResetGameEvent {
+    code: string
+}

@@ -7,6 +7,7 @@ import {
   ChangeGameStateEvent,
   CreateEvent,
   JoinEvent,
+  ResetGameEvent,
 } from "../events/LobbyEvents";
 import {
   AddDeckEvent,
@@ -87,7 +88,7 @@ io.on("connection", (socket) => {
   socket.on("addDeck", (event: AddDeckEvent) => {
     console.log("Adding deck to game: " + event.code);
     const game = manager.activeGames.get(event.code);
-    game.addDeck(event.deckType, event.isFaceUp);
+    game.addDeck(event.deckType, event.isFaceUp, event.isFanned);
     io.to(game.code).emit("clientUpdate", game);
   });
 
@@ -120,6 +121,14 @@ io.on("connection", (socket) => {
     console.log("Dealing " + event.handSize + "cards in game: " + event.code);
     const game = manager.activeGames.get(event.code);
     game.deal(event.srcPileId, event.handSize);
+    io.to(game.code).emit("clientUpdate", game);
+  });
+
+  // Reset game event
+  socket.on("deal", (event: ResetGameEvent) => {
+    console.log("Resetting game: " + event.code);
+    const game = manager.activeGames.get(event.code);
+    game.resetGame();
     io.to(game.code).emit("clientUpdate", game);
   });
 });

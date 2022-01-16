@@ -4,12 +4,14 @@ import { Card } from "./Card";
 export class Pile {
   cards: Card[];
   isFaceUp: boolean;
+  isSpread: boolean;
 
   constructor(
     nextAvailableId: number,
     deckType: DECK_TYPES,
     isFaceUp: boolean,
-    shuffle: boolean = true
+    shuffle: boolean = true,
+    isSpread: boolean = false
   ) {
     this.isFaceUp = isFaceUp;
     switch (deckType) {
@@ -39,6 +41,7 @@ export class Pile {
     if (shuffle) {
       this.shuffle();
     }
+    this.isSpread = isSpread;
   }
 
   shuffle() {
