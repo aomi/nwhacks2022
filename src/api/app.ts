@@ -129,7 +129,7 @@ io.on("connection", (socket) => {
   });
 
   // Reset game event
-  socket.on("deal", (event: ResetGameEvent) => {
+  socket.on("reset", (event: ResetGameEvent) => {
     console.log("Resetting game: " + event.code);
     const game = manager.activeGames.get(event.code);
     game.resetGame();

@@ -5,8 +5,7 @@ export interface AddDeckEvent {
     code: string,
     deckType: DECK_TYPES,
     isFaceUp: boolean,
-    isFanned: boolean,
-    dontShuffle: boolean
+    isFanned: boolean
 }
 
 export interface RemoveDeckEvent {

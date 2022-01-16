@@ -30,7 +30,6 @@ export function NewPileMenu({ onSubmit }: NewPileProps) {
   const [hasDeck, setHasDeck] = useState(false);
   const [isFaceUp, setIsFaceUp] = useState(false);
   const [isFanned, setIsFanned] = useState(false);
-  const [dontShuffle, setDontShuffle] = useState(false);
 
   const handleSubmit = useCallback(() => {
     if (onSubmit) {
@@ -38,7 +37,6 @@ export function NewPileMenu({ onSubmit }: NewPileProps) {
         deckType: hasDeck ? DECK_TYPES.STANDARD : DECK_TYPES.EMPTY,
         isFaceUp,
         isFanned,
-        dontShuffle,
       });
     }
 
@@ -46,7 +44,7 @@ export function NewPileMenu({ onSubmit }: NewPileProps) {
     setIsFaceUp(false);
     setIsFanned(false);
     onClose();
-  }, [isFaceUp, hasDeck, isFanned, dontShuffle]);
+  }, [isFaceUp, hasDeck, isFanned]);
 
   return (
     <>
@@ -95,12 +93,6 @@ export function NewPileMenu({ onSubmit }: NewPileProps) {
                   onChange={() => setIsFanned(!isFanned)}
                 >
                   Fan it out? (Recommended with only Discard)
-                </Checkbox>
-                <Checkbox
-                  isChecked={dontShuffle}
-                  onChange={() => setDontShuffle(!dontShuffle)}
-                >
-                  Don't shuffle
                 </Checkbox>
               </VStack>
             </AlertDialogBody>
