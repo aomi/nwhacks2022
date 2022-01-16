@@ -32,8 +32,6 @@ export function Lobby({ players, gameName }: Props) {
 
   const playerPiles = useMemo(() => piles.slice(1, players.length), [piles]);
   const remainingPiles = useMemo(() => piles.slice(players.length), [piles]);
-  // const remainingPiles = [];
-  console.log(playerPiles);
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;

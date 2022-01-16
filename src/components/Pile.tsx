@@ -43,8 +43,6 @@ export function Pile({
     shuffle(cards);
   };
 
-  console.log(cards, pileId);
-
   return (
     <VStack>
       <Droppable droppableId={pileId}>
