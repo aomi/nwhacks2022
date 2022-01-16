@@ -61,6 +61,7 @@ export class Game {
 
   moveCard(targetCard: Card, srcPileID: number, destPileId: number) {
     const srcPile = this.piles[srcPileID];
+    if (targetCard == undefined) return;
     const srcIdx = srcPile.cards.findIndex(card => targetCard.id === card.id);
     srcPile.cards.splice(srcIdx, 1);
     this.piles[destPileId].cards.push(targetCard);
