@@ -4,10 +4,10 @@ export enum GameState {
 }
 
 export enum Suit {
-    SPADES,
-    DIAMONDS,
-    CLUBS,
-    HEARTS
+    SPADES = "Spades",
+    DIAMONDS = "Diamonds",
+    CLUBS = "Clubs",
+    HEARTS = "Hearts"
 }
 
 export enum DECK_TYPES {
