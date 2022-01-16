@@ -4,7 +4,7 @@ import { Server } from "socket.io";
 import cors from "cors";
 import { GameManager } from "./GameManager";
 import { ChangeGameStateEvent, CreateEvent, JoinEvent } from "../events/LobbyEvents";
-import { AddDeckEvent, RemoveDeckEvent } from "../events/GameEvents";
+import { AddDeckEvent, RemoveDeckEvent, ShuffleEvent } from "../events/GameEvents";
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -88,6 +88,14 @@ io.on("connection", (socket) => {
     game.removeDeck(event.pileId);
     socket.to(game.code).emit("clientUpdate", game);
   });
+
+  // Shuffle a pile
+    socket.on('shuffle', (event: ShuffleEvent) => {
+      console.log('Removing deck ' + event.pileId + ' from game: ' + event.code);
+      const game = manager.activeGames.get(event.code);
+      game.piles[event.pileId].shuffle();
+      socket.to(game.code).emit("clientUpdate", game);
+    });
 });
 
 httpServer.listen(port, () => {

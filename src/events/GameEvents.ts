@@ -9,3 +9,8 @@ export interface RemoveDeckEvent {
     code: string,
     pileId: number
 }
+
+export interface ShuffleEvent {
+    code: string,
+    pileId: number
+}
