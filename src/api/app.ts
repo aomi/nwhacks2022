@@ -3,7 +3,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import cors from "cors";
 import { GameManager } from "./GameManager";
-import { CreateEvent, JoinEvent } from "../events/MenuEvent";
+import { ChangeGameStateEvent, CreateEvent, JoinEvent } from "../events/LobbyEvents";
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -48,6 +48,8 @@ io.on("connection", (socket) => {
     console.log('creating a new game');
     const newGame = manager.addGame(event.gameName, event.maxPlayuers, event.playerName);
     console.log(newGame);
+    socket.join(newGame.code);
+    socket.to(newGame.code).emit("clientUpdate", newGame);
   });
 
   // Join event
@@ -59,7 +61,15 @@ io.on("connection", (socket) => {
     }
     else {
       console.log(game);
+      socket.to(game.code).emit("clientUpdate", game);
     }
+  });
+
+  // StartGameConfig Event
+  socket.on('join', (event: ChangeGameStateEvent) => {
+    console.log('Changing game: ' + event.code + ' to ' + event.newState);
+    const game = manager.setGameState(event.code, event.newState);
+    socket.to(game.code).emit("clientUpdate", game);
   });
 });
 
