@@ -88,7 +88,7 @@ io.on("connection", (socket) => {
   socket.on("addDeck", (event: AddDeckEvent) => {
     console.log("Adding deck to game: " + event.code);
     const game = manager.activeGames.get(event.code);
-    game.addDeck(event.deckType, event.isFaceUp);
+    game.addDeck(event.deckType, event.isFaceUp, event.isFanned);
     io.to(game.code).emit("clientUpdate", game);
   });
 

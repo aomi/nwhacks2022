@@ -117,6 +117,7 @@ export function Lobby({ game }: Props) {
                       pileId={`${i}`}
                       name={i === 0 ? "Pick up" : "Discard"}
                       isFaceUp={remotePiles[i].isFaceUp}
+                      isSpread={remotePiles[i].isSpread}
                     />
                   ))}
             </HStack>

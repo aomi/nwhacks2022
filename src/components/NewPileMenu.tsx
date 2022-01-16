@@ -28,19 +28,22 @@ export function NewPileMenu({ onSubmit }: NewPileProps) {
 
   const [hasDeck, setHasDeck] = useState(false);
   const [isFaceUp, setIsFaceUp] = useState(false);
+  const [isFanned, setIsFanned] = useState(false);
 
   const handleSubmit = useCallback(() => {
     if (onSubmit) {
       onSubmit({
         deckType: hasDeck ? DECK_TYPES.STANDARD : DECK_TYPES.EMPTY,
         isFaceUp,
+        isFanned,
       });
     }
 
     setHasDeck(false);
     setIsFaceUp(false);
+    setIsFanned(false);
     onClose();
-  }, [isFaceUp, hasDeck]);
+  }, [isFaceUp, hasDeck, isFanned]);
 
   return (
     <>
@@ -66,13 +69,19 @@ export function NewPileMenu({ onSubmit }: NewPileProps) {
                   }}
                 >
                   <Radio value="draw_pile">Draw Pile</Radio>
-                  <Radio value="discard_pile">Discard Pile</Radio>
+                  <Radio value="discard_pile">Empty Pile</Radio>
                 </RadioGroup>
                 <Checkbox
                   isChecked={isFaceUp}
                   onChange={() => setIsFaceUp(!isFaceUp)}
                 >
                   Face Up?
+                </Checkbox>
+                <Checkbox
+                  isChecked={isFanned}
+                  onChange={() => setIsFanned(!isFanned)}
+                >
+                  Fan it out?
                 </Checkbox>
               </VStack>
             </AlertDialogBody>

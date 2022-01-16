@@ -4,7 +4,8 @@ import { Card } from "../api/gameBoardObjects/Card";
 export interface AddDeckEvent {
     code: string,
     deckType: DECK_TYPES,
-    isFaceUp: boolean
+    isFaceUp: boolean,
+    isFanned: boolean
 }
 
 export interface RemoveDeckEvent {
