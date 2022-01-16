@@ -16,6 +16,7 @@ import {
   RemoveDeckEvent,
   ShuffleEvent,
 } from "../events/GameEvents";
+import path from "path";
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -36,6 +37,9 @@ const io = new Server(httpServer, {
 const manager = new GameManager();
 
 app.use(express.static("build"));
+app.get("*", (_req, res) => {
+  res.sendFile(path.join(__dirname, "../../build/index.html"));
+});
 
 io.on("connection", (socket) => {
   console.log("user connected", socket.id);
