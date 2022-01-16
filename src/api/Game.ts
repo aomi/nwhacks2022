@@ -51,7 +51,7 @@ export class Game {
   }
 
   addDeck(deckType: DECK_TYPES, isFaceUp: boolean, isFanned?: boolean) {
-    this.piles.push(new Pile(this.nextPlayerId, deckType, isFaceUp));
+    this.piles.push(new Pile(this.nextPlayerId, deckType, isFaceUp, isFanned));
     if (deckType == DECK_TYPES.STANDARD) {
       this.nextAvailableCardId += 52;
     }
