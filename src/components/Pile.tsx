@@ -106,7 +106,9 @@ export function Pile({
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                       >
-                        {isFaceUp ? topCard.value : "back of card"}
+                        {isFaceUp
+                          ? `${topCard.value} ${topCard.suit}`
+                          : "back of card"}
                       </Box>
                     )}
                   </Draggable>
