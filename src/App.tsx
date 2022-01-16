@@ -1,47 +1,41 @@
 import React, { useEffect, useState } from "react";
 import { Lobby } from "./pages/Lobby";
-import { CreateEvent } from "./events/LobbyEvents";
 import { Game } from "./api/Game";
-import { useSocket, useSocketSend } from "./contexts/provider";
+import { useSocket } from "./contexts/provider";
+import { Box } from "@chakra-ui/react";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import { Home } from "./pages/Home";
 
 export function App() {
   const [game, setGame] = useState<Game | null>(null);
-  const { send, data } = useSocket<string>("message");
-  const { send: createGame } = useSocket<CreateEvent>("create");
   const { data: gameData } = useSocket<Game>("lobby:update");
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    setGame(gameData);
-  }, [game]);
+    if (gameData) {
+      console.log(gameData);
+      setGame(gameData);
+      navigate(`/lobby/${gameData.code}`);
+    }
+  }, [gameData]);
 
   return (
-    // <h1>
-    //   Hello world!
-    //   {/* {messages.map((msg) => (
-    //     <pre>{msg}</pre>
-    //   ))} */}
-    // </h1>
-
-    <>
-      {/* <button
-        onClick={() =>
-          createGame({
-            gameName: "my cool game",
-            maxPlayuers: 2,
-            playerName: "dingus",
-          })
-        }
-      >
-        Send Message
-      </button> */}
-      <Lobby
-        gameName="Keith's Game"
-        players={["player 1", "player 2", "player 3"]}
-      />
-    </>
+    <Box>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/join/:code" element={<Home />} />
+        <Route
+          path="/lobby/:code"
+          element={
+            <Lobby
+              game={game}
+              gameName={game?.name ?? ""}
+              players={game?.players.map((p) => p.name) ?? []}
+            />
+          }
+        />
+      </Routes>
+    </Box>
   );
 }

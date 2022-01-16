@@ -1,6 +1,15 @@
-import { Box, Button, Center, Grid, GridItem, HStack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Center,
+  Grid,
+  GridItem,
+  HStack,
+  Spinner,
+} from "@chakra-ui/react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
+import { Game } from "../api/Game";
 import { NewPileMenu } from "../components/NewPileMenu";
 import { Pile } from "../components/Pile";
 import { move, shuffleArray } from "../utils/gameLogic";
@@ -20,12 +29,12 @@ const getItems = (count: number, offset = 0): Card[] =>
 type Props = {
   players: string[];
   gameName: string;
+  game: Game | null;
 };
 
-export function Lobby({ players, gameName }: Props) {
+export function Lobby({ players, gameName, game }: Props) {
   const [piles, setPiles] = useState<Card[][]>([]);
 
-  // set piles for each player
   useEffect(() => {
     setPiles(players.map(() => []));
   }, [players]);
@@ -65,6 +74,10 @@ export function Lobby({ players, gameName }: Props) {
   const onClick = useCallback(() => {
     setPiles([...piles, getItems(5, 5 * piles.length)]);
   }, [piles, setPiles]);
+
+  if (game === null) {
+    return <Spinner />;
+  }
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
