@@ -130,7 +130,7 @@ export function Lobby({ game }: Props) {
                 </Text>
                 <HStack>
                   <Text fontWeight="bold" color="white">
-                    {`${window.location.hostname}/lobbly/${game.code}`}
+                    {`${window.location.hostname}/lobby/${game.code}`}
                   </Text>
                 </HStack>
               </VStack>
