@@ -1,5 +1,10 @@
 # cards with friends
 
+![Screen Shot 2022-07-26 at 16 29 19](https://user-images.githubusercontent.com/1757744/181129545-8ce5eef2-2c76-411c-8137-95311d8db676.png)
+![Screen Shot 2022-07-26 at 16 32 53](https://user-images.githubusercontent.com/1757744/181129780-8f345ed9-765b-467d-885a-4e669a8d8099.png)
+
+
+
 [cards with friends](https://cards-with-friends.fly.dev/) is a multi-player realtime card game area built during [nwHacks 2022](https://www.nwhacks.io/).
 
 Do you like cards? Do you have friends or want to make some? This is the game for you!
